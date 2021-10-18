@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "6jh96NYkHJ/Yv/bOWQG7aPNjAlB9JtJZrF18QpIPQVg46csm/ax2Mg6AkvmyE8eGMmpQjjeZpQWloLk2LUocbg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\DIDAStorageUI\\DIDAStorageUI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Velhinho\\.nuget\\packages\\google.protobuf\\3.18.1\\google.protobuf.3.18.1.nupkg.sha512",
+    "C:\\Users\\Velhinho\\.nuget\\packages\\grpc.core\\2.41.0\\grpc.core.2.41.0.nupkg.sha512",
+    "C:\\Users\\Velhinho\\.nuget\\packages\\grpc.core.api\\2.41.0\\grpc.core.api.2.41.0.nupkg.sha512",
+    "C:\\Users\\Velhinho\\.nuget\\packages\\grpc.tools\\2.41.0\\grpc.tools.2.41.0.nupkg.sha512",
+    "C:\\Users\\Velhinho\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
+    "C:\\Users\\Velhinho\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\4.5.2\\system.runtime.compilerservices.unsafe.4.5.2.nupkg.sha512"
+  ],
+  "logs": []
+}
