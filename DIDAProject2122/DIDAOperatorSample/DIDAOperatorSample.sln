@@ -11,8 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OperatorRunner", "OperatorR
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{21CDF60A-DCD3-4177-97DB-ADFDE58197F7}"
 	ProjectSection(SolutionItems) = preProject
+		app1 = app1
+		app1_data = app1_data
 		DIDALibraries\LibDIDAStorage.dll = DIDALibraries\LibDIDAStorage.dll
 		DIDALibraries\LibDIDAWorker.dll = DIDALibraries\LibDIDAWorker.dll
+		pmscript1 = pmscript1
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassLibraryPM", "..\..\..\..\..\Documents\projetoDAD\ClassLibraryPM\ClassLibraryPM.csproj", "{10A2F9E7-FD4B-48B8-B6C2-883A70948C46}"
