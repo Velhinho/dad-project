@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "PMGUI/1.0.0": {
+        "dependencies": {
+          "ClassLibraryPM": "1.0.0"
+        },
+        "runtime": {
+          "PMGUI.dll": {}
+        }
+      },
+      "ClassLibraryPM/1.0.0": {
+        "runtime": {
+          "ClassLibraryPM.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "PMGUI/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ClassLibraryPM/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
