@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Velhinho\\Documents\\DIDAProject2122\\DIDAProject2122\\LibDIDAStorage\\LibDIDAStorage.csproj",
+      "projectUniqueName": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\LibDIDAStorage\\LibDIDAStorage.csproj",
       "projectName": "LibDIDAStorage",
-      "projectPath": "C:\\Users\\Velhinho\\Documents\\DIDAProject2122\\DIDAProject2122\\LibDIDAStorage\\LibDIDAStorage.csproj",
+      "projectPath": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\LibDIDAStorage\\LibDIDAStorage.csproj",
       "packagesPath": "C:\\Users\\Velhinho\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Velhinho\\Documents\\DIDAProject2122\\DIDAProject2122\\LibDIDAStorage\\obj\\",
+      "outputPath": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\LibDIDAStorage\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Velhinho\\AppData\\Roaming\\NuGet\\NuGet.Config",

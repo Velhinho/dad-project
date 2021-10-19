@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "6jh96NYkHJ/Yv/bOWQG7aPNjAlB9JtJZrF18QpIPQVg46csm/ax2Mg6AkvmyE8eGMmpQjjeZpQWloLk2LUocbg==",
+  "dgSpecHash": "OSyJNG0HMO8vwqar2Wmfcf5+T1rlyIrBIEsg0Kw8OMU7T16D45uKJfBnxyTe+KWoUIQl7OGVyRzZlzjyjGPTIg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\DIDAStorageUI\\DIDAStorageUI.csproj",
+  "projectFilePath": "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\DIDAStorageUI\\DIDAStorageUI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Velhinho\\.nuget\\packages\\google.protobuf\\3.18.1\\google.protobuf.3.18.1.nupkg.sha512",
     "C:\\Users\\Velhinho\\.nuget\\packages\\grpc.core\\2.41.0\\grpc.core.2.41.0.nupkg.sha512",

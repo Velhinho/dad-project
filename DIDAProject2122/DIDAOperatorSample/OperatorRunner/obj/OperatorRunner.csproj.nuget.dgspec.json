@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\OperatorRunner\\OperatorRunner.csproj": {}
+    "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\OperatorRunner\\OperatorRunner.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\IncrementOperator\\IncrementOperator.csproj": {
+    "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\IncrementOperator\\IncrementOperator.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\IncrementOperator\\IncrementOperator.csproj",
+        "projectUniqueName": "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\IncrementOperator\\IncrementOperator.csproj",
         "projectName": "IncrementOperator",
-        "projectPath": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\IncrementOperator\\IncrementOperator.csproj",
+        "projectPath": "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\IncrementOperator\\IncrementOperator.csproj",
         "packagesPath": "C:\\Users\\Velhinho\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\IncrementOperator\\obj\\",
+        "outputPath": "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\IncrementOperator\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Velhinho\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -78,14 +78,14 @@
         }
       }
     },
-    "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\OperatorRunner\\OperatorRunner.csproj": {
+    "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\OperatorRunner\\OperatorRunner.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\OperatorRunner\\OperatorRunner.csproj",
+        "projectUniqueName": "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\OperatorRunner\\OperatorRunner.csproj",
         "projectName": "OperatorRunner",
-        "projectPath": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\OperatorRunner\\OperatorRunner.csproj",
+        "projectPath": "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\OperatorRunner\\OperatorRunner.csproj",
         "packagesPath": "C:\\Users\\Velhinho\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\OperatorRunner\\obj\\",
+        "outputPath": "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\OperatorRunner\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Velhinho\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -102,8 +102,8 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\IncrementOperator\\IncrementOperator.csproj": {
-                "projectPath": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\IncrementOperator\\IncrementOperator.csproj"
+              "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\IncrementOperator\\IncrementOperator.csproj": {
+                "projectPath": "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\IncrementOperator\\IncrementOperator.csproj"
               }
             }
           }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\PuppetMaster\\PuppetMaster.csproj": {}
+    "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\PuppetMaster\\PuppetMaster.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\PuppetMaster\\PuppetMaster.csproj": {
+    "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\PuppetMaster\\PuppetMaster.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\PuppetMaster\\PuppetMaster.csproj",
+        "projectUniqueName": "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\PuppetMaster\\PuppetMaster.csproj",
         "projectName": "PuppetMaster",
-        "projectPath": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\PuppetMaster\\PuppetMaster.csproj",
+        "projectPath": "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\PuppetMaster\\PuppetMaster.csproj",
         "packagesPath": "C:\\Users\\Velhinho\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\PuppetMaster\\obj\\",
+        "outputPath": "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\PuppetMaster\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Velhinho\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Velhinho\\Documents\\DIDAProject2122\\DIDAProject2122\\LibDIDAWorker\\LibDIDAWorker.csproj": {}
+    "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\LibDIDAWorker\\LibDIDAWorker.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Velhinho\\Documents\\DIDAProject2122\\DIDAProject2122\\LibDIDAWorker\\LibDIDAWorker.csproj": {
+    "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\LibDIDAWorker\\LibDIDAWorker.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Velhinho\\Documents\\DIDAProject2122\\DIDAProject2122\\LibDIDAWorker\\LibDIDAWorker.csproj",
+        "projectUniqueName": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\LibDIDAWorker\\LibDIDAWorker.csproj",
         "projectName": "LibDIDAWorker",
-        "projectPath": "C:\\Users\\Velhinho\\Documents\\DIDAProject2122\\DIDAProject2122\\LibDIDAWorker\\LibDIDAWorker.csproj",
+        "projectPath": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\LibDIDAWorker\\LibDIDAWorker.csproj",
         "packagesPath": "C:\\Users\\Velhinho\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Velhinho\\Documents\\DIDAProject2122\\DIDAProject2122\\LibDIDAWorker\\obj\\",
+        "outputPath": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\LibDIDAWorker\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Velhinho\\AppData\\Roaming\\NuGet\\NuGet.Config",

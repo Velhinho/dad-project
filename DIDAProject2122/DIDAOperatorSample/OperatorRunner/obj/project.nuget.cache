@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "N11IG6sJmdMKgA+2AyCroIeLxniYD40fvCSzMSbBr+d1xq9gRyqibRqqzD/HQkUlbP9tgu5Kmyvv+R2AOxNb5g==",
+  "dgSpecHash": "qwgp/QAz1RJKjBIj/ODSawPnOat79o9qg9iKHz3k4nfRSAznnaMubtEQyKVuWWFCHT4hRO6yNVtnSRSlqskrfw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Velhinho\\Source\\Repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\OperatorRunner\\OperatorRunner.csproj",
+  "projectFilePath": "C:\\Users\\Velhinho\\source\\repos\\dad-project\\DIDAProject2122\\DIDAOperatorSample\\OperatorRunner\\OperatorRunner.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Velhinho\\.nuget\\packages\\google.protobuf\\3.18.1\\google.protobuf.3.18.1.nupkg.sha512",
     "C:\\Users\\Velhinho\\.nuget\\packages\\grpc.core.api\\2.40.0\\grpc.core.api.2.40.0.nupkg.sha512",
