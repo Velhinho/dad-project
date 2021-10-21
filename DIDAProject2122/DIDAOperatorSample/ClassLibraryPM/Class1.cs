@@ -13,15 +13,27 @@ namespace ClassLibraryPM {
         List<StorageStruct> StorageList = new List<StorageStruct>();
         string populate_file;
         bool debugMode = false;
+        string debugModeString = "noDebug";
         ClientStruct client = new ClientStruct();
 
-        // le o ficheiro de config
-        // ler nos de storage, workers, etc
+        /* le o ficheiro de config
+        ler nos de storage, workers, etc
+        ordem no ficheiro:
+            0 - debug
+            1 - storage
+            2 - workers
+            3 - scheduler
+            4 - o resto 
+        */
         public void readConfigFile(string file_name) {
             
             string path = Path.Combine(Environment.CurrentDirectory, @"files\", file_name);
             string[] lines = System.IO.File.ReadAllLines(path);
             string[] words;
+            // infos para inicio de processos
+            ProcessStartInfo startInfo;
+            string[] args;
+
             foreach (string line in lines) {
 
                 words = line.Split(' ');
@@ -30,7 +42,15 @@ namespace ClassLibraryPM {
                 switch (word) {
                     case "scheduler":
                         schedulerURL = words[1];
-                        Process.Start("Scheduler.exe", schedulerURL);
+
+                        startInfo = new ProcessStartInfo("Scheduler.exe"); //set do .exe do processo
+
+                        //args a passar
+                        //adicionar aqui informacoes de storage, workers, o necessario
+                        args = new string[] { debugModeString, schedulerURL}; // definir os argumentos
+                        startInfo.Arguments = string.Join(" ", args); //passa como string mas vê como array no processo iniciado
+
+                        Process.Start(startInfo);
                         break;
                     case "worker":
                         workerStruct auxWorker = new workerStruct();
@@ -40,6 +60,14 @@ namespace ClassLibraryPM {
 
                         WorkersList.Add(auxWorker);
 
+                        startInfo = new ProcessStartInfo("Worker.exe"); //set do .exe do processo
+
+                        //args a passar, adicionar o necessario 
+                        args = new string[] { debugModeString, auxWorker.name, auxWorker.url, auxWorker.gossipDelay}; 
+                        startInfo.Arguments = string.Join(" ", args);
+
+                        Process.Start(startInfo);
+
                         break;
                     case "storage":
                         StorageStruct auxStorage = new StorageStruct();
@@ -48,6 +76,14 @@ namespace ClassLibraryPM {
                         auxStorage.gossipDelay = words[3];
 
                         StorageList.Add(auxStorage);
+
+                        startInfo = new ProcessStartInfo("Storage.exe"); //set do .exe do processo
+                        //args a passar, adicionar o necessario 
+                        args = new string[] { debugModeString, auxStorage.name, auxStorage.url, auxStorage.gossipDelay };
+                        startInfo.Arguments = string.Join(" ", args);
+
+                        Process.Start(startInfo);
+
                         break;
                     case "populate":
                         populate_file = words[1];
@@ -58,6 +94,7 @@ namespace ClassLibraryPM {
                         break;
                     case "debug":
                         debugMode = true;
+                        debugModeString = "debug";
                         break;
                     case "status":
 
@@ -73,6 +110,9 @@ namespace ClassLibraryPM {
                         break;
                     case "wait":
 
+                        int wait_interval = Int32.Parse(words[1]);
+
+                        System.Threading.Thread.Sleep(wait_interval);
                         break;
                 }     
             }

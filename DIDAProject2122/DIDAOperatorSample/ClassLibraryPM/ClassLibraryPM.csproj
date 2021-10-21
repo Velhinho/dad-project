@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Scheduler\Scheduler.csproj" />
+    <ProjectReference Include="..\Storage\Storage.csproj" />
+    <ProjectReference Include="..\Worker\Worker.csproj" />
   </ItemGroup>
 
 </Project>

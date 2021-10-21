@@ -22,7 +22,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PMGUI", "PMGUI\PMGUI.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassLibraryPM", "ClassLibraryPM\ClassLibraryPM.csproj", "{5F84449F-2ACE-432F-AAEB-FA05397E6A8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scheduler", "Scheduler\Scheduler.csproj", "{AD5FCE30-775A-4C21-B4DB-36CFCFC252B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scheduler", "Scheduler\Scheduler.csproj", "{AD5FCE30-775A-4C21-B4DB-36CFCFC252B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Worker", "Worker\Worker.csproj", "{BF8C0C64-C9E7-4FAC-9749-68CBC746555A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage", "Storage\Storage.csproj", "{37F07B6C-82C5-421F-B53F-6FC05B5CE0A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +58,14 @@ Global
 		{AD5FCE30-775A-4C21-B4DB-36CFCFC252B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD5FCE30-775A-4C21-B4DB-36CFCFC252B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD5FCE30-775A-4C21-B4DB-36CFCFC252B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF8C0C64-C9E7-4FAC-9749-68CBC746555A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF8C0C64-C9E7-4FAC-9749-68CBC746555A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF8C0C64-C9E7-4FAC-9749-68CBC746555A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF8C0C64-C9E7-4FAC-9749-68CBC746555A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37F07B6C-82C5-421F-B53F-6FC05B5CE0A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37F07B6C-82C5-421F-B53F-6FC05B5CE0A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37F07B6C-82C5-421F-B53F-6FC05B5CE0A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37F07B6C-82C5-421F-B53F-6FC05B5CE0A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
