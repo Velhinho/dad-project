@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using Scheduler;
 
 namespace ClassLibraryPM {
     public class PM_logic {
@@ -28,6 +30,7 @@ namespace ClassLibraryPM {
                 switch (word) {
                     case "scheduler":
                         schedulerURL = words[1];
+                        Process.Start("Scheduler.exe", schedulerURL);
                         break;
                     case "worker":
                         workerStruct auxWorker = new workerStruct();
