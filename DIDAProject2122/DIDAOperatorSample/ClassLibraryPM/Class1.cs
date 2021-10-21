@@ -34,6 +34,9 @@ namespace ClassLibraryPM {
             ProcessStartInfo startInfo;
             string[] args;
 
+            Dictionary<string, Process> list_of_processes = new Dictionary<string, Process>();
+            Process aux_To_add_list; 
+
             foreach (string line in lines) {
 
                 words = line.Split(' ');
@@ -51,6 +54,7 @@ namespace ClassLibraryPM {
                         startInfo.Arguments = string.Join(" ", args); //passa como string mas vê como array no processo iniciado
 
                         Process.Start(startInfo);
+
                         break;
                     case "worker":
                         workerStruct auxWorker = new workerStruct();
@@ -66,8 +70,8 @@ namespace ClassLibraryPM {
                         args = new string[] { debugModeString, auxWorker.name, auxWorker.url, auxWorker.gossipDelay}; 
                         startInfo.Arguments = string.Join(" ", args);
 
-                        Process.Start(startInfo);
-
+                        aux_To_add_list = Process.Start(startInfo);
+                        list_of_processes.Add(auxWorker.name, aux_To_add_list);
                         break;
                     case "storage":
                         StorageStruct auxStorage = new StorageStruct();
@@ -82,7 +86,8 @@ namespace ClassLibraryPM {
                         args = new string[] { debugModeString, auxStorage.name, auxStorage.url, auxStorage.gossipDelay };
                         startInfo.Arguments = string.Join(" ", args);
 
-                        Process.Start(startInfo);
+                        aux_To_add_list = Process.Start(startInfo);
+                        list_of_processes.Add(auxStorage.name, aux_To_add_list);
 
                         break;
                     case "populate":
@@ -106,6 +111,13 @@ namespace ClassLibraryPM {
 
                         break;
                     case "crash":
+
+                        string to_crash = words[1];
+
+                        Process to_kill = list_of_processes[to_crash];
+                        to_kill.Kill();
+
+                        list_of_processes.Remove(to_crash);
 
                         break;
                     case "wait":
