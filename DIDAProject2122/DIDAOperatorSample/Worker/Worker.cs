@@ -6,9 +6,11 @@ namespace Worker {
     class WorkerServerService : DIDAWorkerServerService.DIDAWorkerServerServiceBase
     {
         string worker_id;
-        public WorkerServerService(string id)
+        int gossip_delay;
+        public WorkerServerService(string id, int delay)
         {
             worker_id = id;
+            gossip_delay = delay;
         }
     }
 
@@ -20,11 +22,13 @@ namespace Worker {
             }
             string id = args[1];
             Uri uri = new Uri(args[2]);
+            int gossip_delay = Int32.Parse(args[3]);
             int port = uri.Port;
+            string host = uri.Host;
             Server server = new Server
             {
-                Services = { DIDAWorkerServerService.BindService(new WorkerServerService(id)) },
-                Ports = { new ServerPort("localhost", port, ServerCredentials.Insecure) }
+                Services = { DIDAWorkerServerService.BindService(new WorkerServerService(id, gossip_delay)) },
+                Ports = { new ServerPort(host, port, ServerCredentials.Insecure) }
             };
             server.Start();
             Console.WriteLine("Server " + id + " started on port " + port);

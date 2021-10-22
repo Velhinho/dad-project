@@ -1,0 +1,14 @@
+﻿syntax = "proto3";
+
+
+service DIDASchedulerServerService {
+    rpc read(TestRequest) returns (TestReply);
+}
+
+message TestRequest {
+    string val = 1;        
+}
+
+message TestReply {
+    string val = 1;
+}
