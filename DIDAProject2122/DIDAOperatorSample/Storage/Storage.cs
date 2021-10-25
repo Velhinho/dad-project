@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Grpc.Core;
+using System.Collections.Generic;
 
 namespace Storage {
 
@@ -8,6 +9,8 @@ namespace Storage {
     {
         string storage_id;
         int gossip_delay;
+        Dictionary<string, string> items = new Dictionary<string, string>();
+
         public StorageService(string id, int delay)
         {
             storage_id = id;
@@ -48,6 +51,19 @@ namespace Storage {
         {
             return new DIDAVersion { ReplicaId = -1, VersionNumber = -1 };
         }
+        public override Task<DIDAPrintReply> printStatus(DIDAPrintRequest request, ServerCallContext context)
+        {
+            
+            return Task.FromResult<DIDAPrintReply>(new DIDAPrintReply());
+        }
+        public override Task<DIDAListServerReply> listServer(DIDAListServerRequest request, ServerCallContext context)
+        {
+            foreach (var thing in items)
+            {
+                Console.WriteLine(thing.Key + ": " + thing.Value);
+            }
+            return Task.FromResult<DIDAListServerReply>(new DIDAListServerReply());
+        }
     }
 
     class Storage {
@@ -56,9 +72,9 @@ namespace Storage {
             foreach (var item in args) {
                 Console.WriteLine(item.ToString());
             }
-            string id = args[1];
-            Uri uri = new Uri(args[2]);
-            int gossip_delay = Int32.Parse(args[3]);
+            string id = args[0];
+            Uri uri = new Uri(args[1]);
+            int gossip_delay = Int32.Parse(args[2]);
             int port = uri.Port;
             string host = uri.Host;
             Server server = new Server

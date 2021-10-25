@@ -50,7 +50,7 @@ namespace ClassLibraryPM {
 
                         //args a passar
                         //adicionar aqui informacoes de storage, workers, o necessario
-                        args = new string[] { debugModeString, schedulerURL}; // definir os argumentos
+                        args = new string[] { schedulerURL}; // definir os argumentos
                         startInfo.Arguments = string.Join(" ", args); //passa como string mas vê como array no processo iniciado
 
                         Process.Start(startInfo);
@@ -83,7 +83,7 @@ namespace ClassLibraryPM {
 
                         startInfo = new ProcessStartInfo("Storage.exe"); //set do .exe do processo
                         //args a passar, adicionar o necessario 
-                        args = new string[] { debugModeString, auxStorage.name, auxStorage.url, auxStorage.gossipDelay };
+                        args = new string[] { auxStorage.name, auxStorage.url, auxStorage.gossipDelay };
                         startInfo.Arguments = string.Join(" ", args);
 
                         aux_To_add_list = Process.Start(startInfo);

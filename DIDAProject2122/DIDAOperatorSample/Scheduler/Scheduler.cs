@@ -14,7 +14,7 @@ namespace Scheduler
             foreach (var item in args) {
                 Console.WriteLine(item.ToString());
             }
-            Uri uri = new Uri(args[1]);
+            Uri uri = new Uri(args[0]);
             int port = uri.Port;
             string host = uri.Host;
             Server server = new Server
