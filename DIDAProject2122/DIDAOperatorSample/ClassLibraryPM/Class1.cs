@@ -16,137 +16,180 @@ namespace ClassLibraryPM {
         string debugModeString = "noDebug";
         ClientStruct client = new ClientStruct();
 
-        /* le o ficheiro de config
-        ler nos de storage, workers, etc
-        ordem no ficheiro:
-            0 - debug
-            1 - storage
-            2 - workers
-            3 - scheduler
-            4 - o resto 
-        */
-        public void readConfigFile(string file_name) {
+        Dictionary<string, Process> list_of_processes = new Dictionary<string, Process>();
+
+        bool readingFile = false;
+        int currentLine = 0;
+        //aux vars para ler ficheiro, quer completo quer linha a linha
+        string path;
+        string[] lines;
+        string[] words;
+
+        //contem as configuracoes lidas ate ao momento
+        string ConfigReaded = "Readed Configs\r\n";
+
+        //le um ficheiro
+        public void readFile(string file_name) {
+            path = Path.Combine(Environment.CurrentDirectory, @"files\", file_name);
+            lines = System.IO.File.ReadAllLines(path);
+        }
+
+        // handle de um linha do ficheiro de configs
+        public void HandleNextLine(string line) {
             
-            string path = Path.Combine(Environment.CurrentDirectory, @"files\", file_name);
-            string[] lines = System.IO.File.ReadAllLines(path);
-            string[] words;
             // infos para inicio de processos
             ProcessStartInfo startInfo;
             string[] args;
 
-            Dictionary<string, Process> list_of_processes = new Dictionary<string, Process>();
-            Process aux_To_add_list; 
+            Process aux_To_add_list;
 
-            foreach (string line in lines) {
+            string[] words = line.Split(' ');
+            string word = words[0];
 
-                words = line.Split(' ');
-                string word = words[0];
+            switch (word) {
+                case "scheduler":
+                    schedulerURL = words[1];
 
-                switch (word) {
-                    case "scheduler":
-                        schedulerURL = words[1];
+                    startInfo = new ProcessStartInfo("Scheduler.exe"); //set do .exe do processo
 
-                        startInfo = new ProcessStartInfo("Scheduler.exe"); //set do .exe do processo
+                    //args a passar
+                    //adicionar aqui informacoes de storage, workers, o necessario
+                    args = new string[] { schedulerURL }; // definir os argumentos
+                    startInfo.Arguments = string.Join(" ", args); //passa como string mas vê como array no processo iniciado
 
-                        //args a passar
-                        //adicionar aqui informacoes de storage, workers, o necessario
-                        args = new string[] { schedulerURL}; // definir os argumentos
-                        startInfo.Arguments = string.Join(" ", args); //passa como string mas vê como array no processo iniciado
+                    Process.Start(startInfo);
 
-                        Process.Start(startInfo);
+                    ConfigReaded = ConfigReaded + "schedulerURL = " + schedulerURL + "\r\n";
 
-                        break;
-                    case "worker":
-                        workerStruct auxWorker = new workerStruct();
-                        auxWorker.name = words[1];
-                        auxWorker.url = words[2];
-                        auxWorker.gossipDelay = words[3];
+                    break;
+                case "worker":
+                    workerStruct auxWorker = new workerStruct();
+                    auxWorker.name = words[1];
+                    auxWorker.url = words[2];
+                    auxWorker.gossipDelay = words[3];
 
-                        WorkersList.Add(auxWorker);
+                    WorkersList.Add(auxWorker);
 
-                        startInfo = new ProcessStartInfo("Worker.exe"); //set do .exe do processo
+                    startInfo = new ProcessStartInfo("Worker.exe"); //set do .exe do processo
 
-                        //args a passar, adicionar o necessario 
-                        args = new string[] { debugModeString, auxWorker.name, auxWorker.url, auxWorker.gossipDelay}; 
-                        startInfo.Arguments = string.Join(" ", args);
+                    //args a passar, adicionar o necessario 
+                    args = new string[] { debugModeString, auxWorker.name, auxWorker.url, auxWorker.gossipDelay };
+                    startInfo.Arguments = string.Join(" ", args);
 
-                        aux_To_add_list = Process.Start(startInfo);
-                        list_of_processes.Add(auxWorker.name, aux_To_add_list);
-                        break;
-                    case "storage":
-                        StorageStruct auxStorage = new StorageStruct();
-                        auxStorage.name = words[1];
-                        auxStorage.url = words[2];
-                        auxStorage.gossipDelay = words[3];
+                    aux_To_add_list = Process.Start(startInfo);
+                    list_of_processes.Add(auxWorker.name, aux_To_add_list);
 
-                        StorageList.Add(auxStorage);
+                    ConfigReaded = ConfigReaded + "worker node = " + auxWorker.name + "--" + auxWorker.url + "--" + auxWorker.gossipDelay + "\r\n";
 
-                        startInfo = new ProcessStartInfo("Storage.exe"); //set do .exe do processo
-                        //args a passar, adicionar o necessario 
-                        args = new string[] { auxStorage.name, auxStorage.url, auxStorage.gossipDelay };
-                        startInfo.Arguments = string.Join(" ", args);
+                    break;
+                case "storage":
+                    StorageStruct auxStorage = new StorageStruct();
+                    auxStorage.name = words[1];
+                    auxStorage.url = words[2];
+                    auxStorage.gossipDelay = words[3];
 
-                        aux_To_add_list = Process.Start(startInfo);
-                        list_of_processes.Add(auxStorage.name, aux_To_add_list);
+                    StorageList.Add(auxStorage);
 
-                        break;
-                    case "populate":
-                        populate_file = words[1];
-                        break;
-                    case "client":
-                        client.app_file = words[2];
-                        client.input = words[1]; 
-                        break;
-                    case "debug":
-                        debugMode = true;
-                        debugModeString = "debug";
-                        break;
-                    case "status":
+                    startInfo = new ProcessStartInfo("Storage.exe"); //set do .exe do processo
+                                                                     //args a passar, adicionar o necessario 
+                    args = new string[] { auxStorage.name, auxStorage.url, auxStorage.gossipDelay };
+                    startInfo.Arguments = string.Join(" ", args);
 
-                        break;
-                    case "listServer":
+                    aux_To_add_list = Process.Start(startInfo);
+                    list_of_processes.Add(auxStorage.name, aux_To_add_list);
 
-                        break;
-                    case "listGlobal":
+                    ConfigReaded = ConfigReaded + "storage node = " + auxStorage.name + "--" + auxStorage.url + "--" + auxStorage.gossipDelay + "\r\n";
 
-                        break;
-                    case "crash":
+                    break;
+                case "populate":
+                    populate_file = words[1];
 
-                        string to_crash = words[1];
+                    ConfigReaded = ConfigReaded + "populate file: " + populate_file + "\r\n";
 
-                        Process to_kill = list_of_processes[to_crash];
-                        to_kill.Kill();
+                    break;
+                case "client":
+                    client.app_file = words[2];
+                    client.input = words[1];
 
-                        list_of_processes.Remove(to_crash);
+                    ConfigReaded = ConfigReaded + "client_input = " + client.input + "--client_app_file = " + client.app_file + "\r\n";
 
-                        break;
-                    case "wait":
+                    break;
+                case "debug":
+                    debugMode = true;
+                    debugModeString = "debug";
 
-                        int wait_interval = Int32.Parse(words[1]);
+                    ConfigReaded = ConfigReaded + "Debug Mode On \r\n";
 
-                        System.Threading.Thread.Sleep(wait_interval);
-                        break;
-                }     
+                    break;
+                case "status":
+
+                    break;
+                case "listServer":
+
+                    break;
+                case "listGlobal":
+
+                    break;
+                case "crash":
+
+                    string to_crash = words[1];
+
+                    Process to_kill = list_of_processes[to_crash];
+                    to_kill.Kill();
+
+                    list_of_processes.Remove(to_crash);
+
+                    ConfigReaded = ConfigReaded + "Crash server " + to_crash + "\r\n";
+
+                    break;
+                case "wait":
+
+                    int wait_interval = Int32.Parse(words[1]);
+
+                    System.Threading.Thread.Sleep(wait_interval);
+
+                    ConfigReaded = ConfigReaded + "Wait " + words[1] + " milliseconds\r\n";
+                    break;
             }
+        }
+
+
+        //ler o ficheiro todo de uma vez
+        public void readConfigFile(string file_name) {
+            if (!readingFile) {
+                readFile(file_name);
+                readingFile = true;
+            }
+
+            for (int i = currentLine; i < lines.Length; i++) {
+
+                HandleNextLine(lines[i]);
+            }
+        }
+
+        public bool readNextLine(string file_name) {
+
+            bool end_of_file = false;
+            if (!readingFile) {
+                readFile(file_name);
+                readingFile = true;
+            }
+
+
+            string line_to_process = lines[currentLine];
+            currentLine++;
+            if (currentLine == lines.Length) {
+                end_of_file = true;
+            }
+
+            HandleNextLine(line_to_process);
+
+            return end_of_file;
         }
 
         public string listarConfig() {
 
-            string s = "Readed Configs\r\nschedulerURL = " + schedulerURL + "\r\n";
-            //add storage nodes
-            foreach (StorageStruct aux in StorageList) {
-                s = s + "storage node = " + aux.name + "--" + aux.url + "--" + aux.gossipDelay + "\r\n";
-            }
-            //add worker nodes
-            foreach (workerStruct aux in WorkersList) {
-                s = s + "worker node = " + aux.name + "--" + aux.url + "--" + aux.gossipDelay + "\r\n";
-            }
-
-            s = s + "populate file: " + populate_file + "\r\n";
-
-            s = s + "client_input = " + client.input + "--client_app_file = " + client.app_file + "\r\n";
-
-            return s;
+            return ConfigReaded;
         }
     }
 
