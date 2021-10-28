@@ -39,7 +39,7 @@ namespace ClassLibraryPM {
             
             // infos para inicio de processos
             ProcessStartInfo startInfo;
-            string[] args;
+            List<string> args = new List<string>();
 
             Process aux_To_add_list;
 
@@ -54,8 +54,14 @@ namespace ClassLibraryPM {
 
                     //args a passar
                     //adicionar aqui informacoes de storage, workers, o necessario
-                    args = new string[] { schedulerURL }; // definir os argumentos
-                    startInfo.Arguments = string.Join(" ", args); //passa como string mas vê como array no processo iniciado
+                    args.Clear();
+                    args.Add(schedulerURL); // definir os argumentos
+                    foreach (workerStruct worker in WorkersList)
+                    {
+                        args.Add(worker.name + "#" + worker.url);
+                    }
+
+                    startInfo.Arguments = string.Join(" ", args.ToArray()); //passa como string mas vê como array no processo iniciado
 
                     Process.Start(startInfo);
 
@@ -73,8 +79,9 @@ namespace ClassLibraryPM {
                     startInfo = new ProcessStartInfo("Worker.exe"); //set do .exe do processo
 
                     //args a passar, adicionar o necessario 
-                    args = new string[] { debugModeString, auxWorker.name, auxWorker.url, auxWorker.gossipDelay };
-                    startInfo.Arguments = string.Join(" ", args);
+                    args.Clear();
+                    args.Add(debugModeString + " " + auxWorker.name + " " + auxWorker.url + " " + auxWorker.gossipDelay);
+                    startInfo.Arguments = string.Join(" ", args.ToArray());
 
                     aux_To_add_list = Process.Start(startInfo);
                     list_of_processes.Add(auxWorker.name, aux_To_add_list);
@@ -92,8 +99,8 @@ namespace ClassLibraryPM {
 
                     startInfo = new ProcessStartInfo("Storage.exe"); //set do .exe do processo
                                                                      //args a passar, adicionar o necessario 
-                    args = new string[] { auxStorage.name, auxStorage.url, auxStorage.gossipDelay };
-                    startInfo.Arguments = string.Join(" ", args);
+                    args.Add(auxStorage.name + " " + auxStorage.url + " " + auxStorage.gossipDelay);
+                    startInfo.Arguments = string.Join(" ", args.ToArray());
 
                     aux_To_add_list = Process.Start(startInfo);
                     list_of_processes.Add(auxStorage.name, aux_To_add_list);
