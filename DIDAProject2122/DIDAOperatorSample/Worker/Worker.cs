@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Grpc.Core;
+using System.Collections.Generic;
 
 namespace Worker {
 
@@ -11,6 +13,19 @@ namespace Worker {
         {
             worker_id = id;
             gossip_delay = delay;
+        }
+
+        public override Task<DIDAReply> work(DIDARequest request, ServerCallContext context)
+        {
+            return Task.FromResult<DIDAReply>(WorkImpl(request));
+        }
+
+        private DIDAReply WorkImpl(DIDARequest request)
+        {
+            return new DIDAReply
+            {
+
+            };
         }
     }
 
