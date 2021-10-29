@@ -1,6 +1,7 @@
 ﻿using System;
 using Grpc.Core;
 using System.Collections.Generic;
+using Grpc.Net.Client;
 
 namespace Scheduler
 {
@@ -36,9 +37,18 @@ namespace Scheduler
             };
             server.Start();
             Console.WriteLine("Server started on port " + port);
+            DIDARequest request = new DIDARequest
+            {
+                Next = 0
+            };
+            request.Chain.Add(new DIDAAssignment { Operator = new DIDAOperatorID { Classname = "AddOperator" } });
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+            GrpcChannel channel = GrpcChannel.ForAddress(WorkersList[0].url);
+            var worker = new DIDAWorkerServerService.DIDAWorkerServerServiceClient(channel);
+            DIDAReply result = worker.work(request);
             Console.ReadKey();
             server.ShutdownAsync().Wait();
-        }
+            }
         struct workerStruct
         {
             public string name, url;
