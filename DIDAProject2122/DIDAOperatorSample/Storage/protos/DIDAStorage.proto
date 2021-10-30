@@ -1,8 +1,7 @@
 ﻿syntax = "proto3";
 
-
 service DIDAStorageService {
-  rpc read(DIDAReadRequest) returns (DIDARecordReply);
+  rpc read(DIDAReadRequest) returns (DIDAReadReply);
   rpc write(DIDAWriteRequest) returns (DIDAVersion);
   rpc updateIfValueIs(DIDAUpdateIfRequest) returns (DIDAVersion);
   rpc printStatus(DIDAPrintRequest) returns (DIDAPrintReply);
@@ -14,7 +13,11 @@ message DIDAReadRequest {
 	DIDAVersion version = 2;
 }
 
-message DIDARecordReply {
+message DIDAReadReply {
+	DIDARecord record = 1;
+}
+
+message DIDARecord {
 	string id = 1;
 	DIDAVersion version = 2;
 	string val = 3;
