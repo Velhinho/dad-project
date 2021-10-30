@@ -18,4 +18,10 @@
 		<Protobuf Include="protos\DIDAWorkerServer.proto" GrpcServices="Server" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Reference Include="LibDIDAWorker">
+	    <HintPath>..\DIDALibraries\LibDIDAWorker.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
 </Project>

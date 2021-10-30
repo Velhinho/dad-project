@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Grpc.Core;
+using System.Collections.Generic;
+using System.Reflection;
+using System.IO;
+using DIDAWorker;
 
 namespace Worker {
 
@@ -11,6 +16,55 @@ namespace Worker {
         {
             worker_id = id;
             gossip_delay = delay;
+        }
+
+        public override Task<DIDAReply> work(DIDARequest request, ServerCallContext context)
+        {
+            return Task.FromResult<DIDAReply>(WorkImpl(request));
+        }
+
+        private DIDAReply WorkImpl(DIDARequest request)
+        {
+            string class_to_load = request.Chain[request.Next].Operator.Classname;
+            Console.WriteLine("Received request to use " + class_to_load);
+            IDIDAOperator opObj = createOpInstance(class_to_load);
+            return new DIDAReply
+            {
+
+            };
+        }
+
+        private IDIDAOperator createOpInstance(string class_to_load)
+        {
+            string _dllNameTermination = ".dll";
+            string _currWorkingDir = Directory.GetCurrentDirectory();
+            string opPath = Path.Combine(_currWorkingDir, "..\\..\\..\\..", "OperatorLibrary");
+            Console.WriteLine("Current working directory (cwd): " + opPath);
+            IDIDAOperator _objLoadedByReflection;
+            foreach (string filename in Directory.EnumerateFiles(opPath))
+            {
+                Console.WriteLine("file in cwd: " + filename);
+                if (filename.EndsWith(_dllNameTermination))
+                {
+                    Console.WriteLine("loading assembly");
+                    Assembly _dll = Assembly.LoadFrom(filename);
+                    Console.WriteLine("getting types");
+                    Type[] _typeList = _dll.GetTypes();
+                    foreach (Type type in _typeList)
+                    {
+                        Console.WriteLine("typename = " + type.Name);
+                        if (type.Name == class_to_load)
+                        {
+                            Console.WriteLine("Found type to load dynamically: " + class_to_load);
+                            _objLoadedByReflection = (IDIDAOperator) Activator.CreateInstance(type);
+                            Console.WriteLine("success!");
+                            return _objLoadedByReflection;
+                        }
+                    }
+                }
+            }
+            Console.WriteLine("Unable to find class " + class_to_load);
+            return null;
         }
     }
 

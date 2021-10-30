@@ -28,6 +28,7 @@ namespace PMGUI {
             this.buttonReadConfigFile = new System.Windows.Forms.Button();
             this.textBoxConfigFileName = new System.Windows.Forms.TextBox();
             this.textBoxListConfigs = new System.Windows.Forms.TextBox();
+            this.ReadNextLineButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonReadConfigFile
@@ -56,11 +57,23 @@ namespace PMGUI {
             this.textBoxListConfigs.Size = new System.Drawing.Size(582, 221);
             this.textBoxListConfigs.TabIndex = 2;
             // 
+            // ReadNextLineButton
+            // 
+            this.ReadNextLineButton.Location = new System.Drawing.Point(602, 79);
+            this.ReadNextLineButton.Name = "ReadNextLineButton";
+            this.ReadNextLineButton.Size = new System.Drawing.Size(151, 28);
+            this.ReadNextLineButton.TabIndex = 3;
+            this.ReadNextLineButton.Text = "Read next line";
+            this.ReadNextLineButton.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.ReadNextLineButton.UseVisualStyleBackColor = true;
+            this.ReadNextLineButton.Click += new System.EventHandler(this.ReadNextLineButton_Click);
+            // 
             // FormPM
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.ReadNextLineButton);
             this.Controls.Add(this.textBoxListConfigs);
             this.Controls.Add(this.textBoxConfigFileName);
             this.Controls.Add(this.buttonReadConfigFile);
@@ -76,6 +89,7 @@ namespace PMGUI {
         private System.Windows.Forms.Button buttonReadConfigFile;
         private System.Windows.Forms.TextBox textBoxConfigFileName;
         private System.Windows.Forms.TextBox textBoxListConfigs;
+        private System.Windows.Forms.Button ReadNextLineButton;
     }
 }
 
