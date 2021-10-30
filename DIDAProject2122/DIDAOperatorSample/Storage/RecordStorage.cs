@@ -11,6 +11,9 @@ namespace Storage
         public RecordStorage()
         {
             records = new Dictionary<string, DIDARecord>();
+            records["a"] = new DIDARecord { Id = "a", Val = "1"};
+            records["b"] = new DIDARecord { Id = "b", Val = "2" };
+            records["c"] = new DIDARecord { Id = "c", Val = "3" };
         }
 
         public DIDARecord GetRecord(string id)
