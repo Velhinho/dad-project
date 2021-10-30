@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -8,6 +8,7 @@
 	<ItemGroup>
 		<PackageReference Include="Google.Protobuf" Version="3.18.1" />
 		<PackageReference Include="Grpc.Core" Version="2.41.0" />
+		<PackageReference Include="Grpc.Net.ClientFactory" Version="2.32.0" />
 		<PackageReference Include="Grpc.Tools" Version="2.41.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -15,6 +16,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Protobuf Include="..\Storage\protos\DIDAStorage.proto" GrpcServices="Client">
+		  <Link>Protos\DIDAStorage.proto</Link>
+		</Protobuf>
 		<Protobuf Include="protos\DIDAWorkerServer.proto" GrpcServices="Server" />
 	</ItemGroup>
 

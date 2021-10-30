@@ -19,6 +19,7 @@ namespace Storage
 
         public override Task<DIDAReadReply> read(DIDAReadRequest request, ServerCallContext context)
         {
+            Console.WriteLine("Received a read request!");
             var record = StorageNode.read(request.Id, request.Version);
             return Task.FromResult<DIDAReadReply>(new DIDAReadReply {Record = record});
         }

@@ -11,9 +11,11 @@ namespace Storage
         public RecordStorage()
         {
             records = new Dictionary<string, DIDARecord>();
-            records["a"] = new DIDARecord { Id = "a", Val = "1"};
-            records["b"] = new DIDARecord { Id = "b", Val = "2" };
-            records["c"] = new DIDARecord { Id = "c", Val = "3" };
+            var version = new DIDAVersion { ReplicaId = 1, VersionNumber = 1 };
+            records["a"] = new DIDARecord { Id = "a", Val = "1", Version = version };
+            records["b"] = new DIDARecord { Id = "b", Val = "2", Version = version };
+            records["c"] = new DIDARecord { Id = "c", Val = "3" , Version = version };
+            records["Epic"]  = new DIDARecord { Id = "Epic", Val = "42", Version = version };
         }
 
         public DIDARecord GetRecord(string id)
@@ -23,7 +25,15 @@ namespace Storage
 
         public DIDARecord GetRecord(string id, DIDAVersion version)
         {
-            return records[id];
+            try
+            {
+                return records[id];
+            }
+            catch
+            {
+                Console.WriteLine("Invalid Id");
+                throw new KeyNotFoundException(id);
+            }
         }
 
         private DIDAVersion UpdateVersion(DIDAVersion oldVersion)

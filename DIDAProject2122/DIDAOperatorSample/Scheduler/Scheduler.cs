@@ -20,10 +20,8 @@ namespace Scheduler
             Uri uri = new Uri(args[0]);
             int port = uri.Port;
             string host = uri.Host;
-            for(var i = 0; i < args.Length; i++)
+            for(var i = 1; i < args.Length; i++)
             {
-                if (i == 0)
-                    continue;
                 string[] workerInfo = args[i].Split("#");
                 workerStruct auxWorker = new workerStruct();
                 auxWorker.name = workerInfo[0];
@@ -39,9 +37,11 @@ namespace Scheduler
             Console.WriteLine("Server started on port " + port);
             DIDARequest request = new DIDARequest
             {
-                Next = 0
+                Input = "Epic",
+                Next = 0,
+                Meta = new DIDAMetaRecord { Id = 1 }
             };
-            request.Chain.Add(new DIDAAssignment { Operator = new DIDAOperatorID { Classname = "AddOperator" } });
+            request.Chain.Add(new DIDAAssignment { Output = "", Operator = new DIDAOperatorID { Classname = "AddOperator" } });
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             GrpcChannel channel = GrpcChannel.ForAddress(WorkersList[0].url);
             var worker = new DIDAWorkerServerService.DIDAWorkerServerServiceClient(channel);

@@ -1,21 +1,24 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Grpc.Core;
-using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using DIDAWorker;
+using System.Collections.Generic;
 
-namespace Worker {
+namespace Worker
+{
 
     class WorkerServerService : DIDAWorkerServerService.DIDAWorkerServerServiceBase
     {
         string worker_id;
         int gossip_delay;
-        public WorkerServerService(string id, int delay)
+        StorageProxy storageProxy;
+        public WorkerServerService(string id, int delay, StorageProxy storageProxy)
         {
             worker_id = id;
             gossip_delay = delay;
+            this.storageProxy = storageProxy;
         }
 
         public override Task<DIDAReply> work(DIDARequest request, ServerCallContext context)
@@ -28,6 +31,11 @@ namespace Worker {
             string class_to_load = request.Chain[request.Next].Operator.Classname;
             Console.WriteLine("Received request to use " + class_to_load);
             IDIDAOperator opObj = createOpInstance(class_to_load);
+            opObj.ConfigureStorage(storageProxy);
+            Console.WriteLine("Configured Storage!");
+            var meta = new DIDAWorker.DIDAMetaRecord { Id = request.Meta.Id };
+            opObj.ProcessRecord(meta, request.Input, request.Chain[request.Next].Output);
+            Console.WriteLine("Finished processing record helll yeah");
             return new DIDAReply
             {
 
@@ -69,6 +77,20 @@ namespace Worker {
     }
 
     class Worker {
+
+        static List<DIDAStorageNode> GetDIDAStorages(string[] args)
+        {
+            List<DIDAStorageNode> nodes = new List<DIDAStorageNode>();
+
+            for (int i = 4; i < args.Length; i++)
+            {
+                string[] words = args[i].Split("#");
+                Uri storageUri = new Uri(words[1]);
+                nodes.Add(new DIDAStorageNode { host = storageUri.Host, port = storageUri.Port, serverId = words[0] });
+            }
+            return nodes;
+        }
+
         static void Main(string[] args) {
 
             foreach (var item in args) {
@@ -79,9 +101,12 @@ namespace Worker {
             int gossip_delay = Int32.Parse(args[3]);
             int port = uri.Port;
             string host = uri.Host;
+            var nodes = GetDIDAStorages(args);
+            StorageProxy storageProxy = new StorageProxy(nodes.ToArray(), new DIDAMetaRecord { Id = 1 });
+            
             Server server = new Server
             {
-                Services = { DIDAWorkerServerService.BindService(new WorkerServerService(id, gossip_delay)) },
+                Services = { DIDAWorkerServerService.BindService(new WorkerServerService(id, gossip_delay, storageProxy)) },
                 Ports = { new ServerPort(host, port, ServerCredentials.Insecure) }
             };
             server.Start();

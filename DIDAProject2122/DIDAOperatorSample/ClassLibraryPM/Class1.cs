@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using Scheduler;
 
 namespace ClassLibraryPM {
     public class PM_logic {
@@ -81,6 +80,10 @@ namespace ClassLibraryPM {
                     //args a passar, adicionar o necessario 
                     args.Clear();
                     args.Add(debugModeString + " " + auxWorker.name + " " + auxWorker.url + " " + auxWorker.gossipDelay);
+                    foreach (StorageStruct storage in StorageList)
+                    {
+                        args.Add(storage.name + "#" + storage.url);
+                    }
                     startInfo.Arguments = string.Join(" ", args.ToArray());
 
                     aux_To_add_list = Process.Start(startInfo);
