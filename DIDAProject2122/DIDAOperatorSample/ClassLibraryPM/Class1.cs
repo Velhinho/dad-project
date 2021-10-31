@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using Grpc.Net.Client;
 
 namespace ClassLibraryPM {
     public class PM_logic {
@@ -26,6 +27,10 @@ namespace ClassLibraryPM {
 
         //contem as configuracoes lidas ate ao momento
         string ConfigReaded = "Readed Configs\r\n";
+
+
+        //comunicar com scheduler 
+        DIDASchedulerServerService.DIDASchedulerServerServiceClient Scheduler_Service;
 
         //le um ficheiro
         public void readFile(string file_name) {
@@ -123,6 +128,21 @@ namespace ClassLibraryPM {
 
                     ConfigReaded = ConfigReaded + "client_input = " + client.input + "--client_app_file = " + client.app_file + "\r\n";
 
+
+                    var client_path = Path.Combine(Environment.CurrentDirectory, @"files\", client.app_file);
+                    string[] commands = System.IO.File.ReadAllLines(client_path);
+                    
+                    AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
+                    GrpcChannel Scheduler_channel = GrpcChannel.ForAddress(schedulerURL);
+                    Scheduler_Service = new DIDASchedulerServerService.DIDASchedulerServerServiceClient(Scheduler_channel);
+
+                    var clientRequest = new DIDAClientRequest { Input = client.input };
+
+                    clientRequest.Commands.Add(commands);
+                    
+                    DIDAEmptyReply empty = Scheduler_Service.RcvClientRequest(clientRequest);
+                    
                     break;
                 case "debug":
                     debugMode = true;

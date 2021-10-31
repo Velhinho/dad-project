@@ -2,12 +2,38 @@
 using Grpc.Core;
 using System.Collections.Generic;
 using Grpc.Net.Client;
+using System.Threading.Tasks;
 
 namespace Scheduler
 {
-    class SchedulerServerService : DIDASchedulerServerService.DIDASchedulerServerServiceBase
-    {
+    class SchedulerServerService : DIDASchedulerServerService.DIDASchedulerServerServiceBase {
 
+        //construtor a completar
+        public SchedulerServerService() {
+
+        }
+
+        public override Task<DIDAEmptyReply> RcvClientRequest(DIDAClientRequest request, ServerCallContext context) {
+            //return base.RcvClientRequest(request, context);
+
+            return Task.FromResult<DIDAEmptyReply>(RcvClientRequestImpl(request));
+        }
+
+        private DIDAEmptyReply RcvClientRequestImpl(DIDAClientRequest request) {
+
+            string input = request.Input;
+            List<string> list_of_commands = new List<string>();
+            foreach(string command in request.Commands) {
+                list_of_commands.Add(command);
+            }
+
+            Console.WriteLine("input = " + input);
+            foreach(string i in list_of_commands) {
+                Console.WriteLine("Command: " + i);
+            }
+
+            return new DIDAEmptyReply { };
+        }
     }
     public class Scheduler
     {
@@ -35,7 +61,8 @@ namespace Scheduler
             };
             server.Start();
             Console.WriteLine("Server started on port " + port);
-            DIDARequest request = new DIDARequest
+            
+            /*DIDARequest request = new DIDARequest
             {
                 Input = "Epic",
                 Next = 0,
@@ -45,10 +72,10 @@ namespace Scheduler
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             GrpcChannel channel = GrpcChannel.ForAddress(WorkersList[0].url);
             var worker = new DIDAWorkerServerService.DIDAWorkerServerServiceClient(channel);
-            DIDAReply result = worker.work(request);
+            DIDAReply result = worker.work(request);*/
             Console.ReadKey();
             server.ShutdownAsync().Wait();
-            }
+        }
         struct workerStruct
         {
             public string name, url;
