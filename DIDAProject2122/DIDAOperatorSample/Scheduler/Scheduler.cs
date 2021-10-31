@@ -34,6 +34,32 @@ namespace Scheduler
 
             return new DIDAEmptyReply { };
         }
+
+        //recebe um DIDAPopData que contem uma lista com todas as informacoes, linha a linha do ficheiro
+        public override Task<DIDAEmptyReply> RcvPopulateData(DIDAPopData request, ServerCallContext context) {
+            //return base.RcvClientRequest(request, context);
+
+            return Task.FromResult<DIDAEmptyReply>(RcvPopulateDataIpml(request));
+        }
+
+        private DIDAEmptyReply RcvPopulateDataIpml(DIDAPopData request) {
+
+            
+            Dictionary<string, string> DataDic = new Dictionary<string, string>();
+            foreach( string line in request.Data) {
+                string[] aux = line.Split(",");
+                DataDic.Add(aux[0], aux[1]);
+            }
+
+            Console.WriteLine("Data dictionary:");
+            foreach (KeyValuePair<string, string> item in DataDic) {
+                Console.WriteLine("id = {0}, data = {1}", item.Key, item.Value);
+            }
+
+            return new DIDAEmptyReply { };
+        }
+
+
     }
     public class Scheduler
     {

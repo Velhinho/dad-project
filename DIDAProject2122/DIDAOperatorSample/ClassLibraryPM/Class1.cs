@@ -26,11 +26,12 @@ namespace ClassLibraryPM {
         string[] words;
 
         //contem as configuracoes lidas ate ao momento
-        string ConfigReaded = "Readed Configs\r\n";
+        string ComandosLidos = "Commands\r\n";
 
 
         //comunicar com scheduler 
         DIDASchedulerServerService.DIDASchedulerServerServiceClient Scheduler_Service;
+        
 
         //le um ficheiro
         public void readFile(string file_name) {
@@ -40,7 +41,8 @@ namespace ClassLibraryPM {
 
         // handle de um linha do ficheiro de configs
         public void HandleNextLine(string line) {
-            
+
+            DIDAEmptyReply empty = new DIDAEmptyReply(); //receber respostas vazias
             // infos para inicio de processos
             ProcessStartInfo startInfo;
             List<string> args = new List<string>();
@@ -69,7 +71,7 @@ namespace ClassLibraryPM {
 
                     Process.Start(startInfo);
 
-                    ConfigReaded = ConfigReaded + "schedulerURL = " + schedulerURL + "\r\n";
+                    ComandosLidos = ComandosLidos + "schedulerURL = " + schedulerURL + "\r\n";
 
                     break;
                 case "worker":
@@ -94,7 +96,7 @@ namespace ClassLibraryPM {
                     aux_To_add_list = Process.Start(startInfo);
                     list_of_processes.Add(auxWorker.name, aux_To_add_list);
 
-                    ConfigReaded = ConfigReaded + "worker node = " + auxWorker.name + "--" + auxWorker.url + "--" + auxWorker.gossipDelay + "\r\n";
+                    ComandosLidos = ComandosLidos + "worker node = " + auxWorker.name + "--" + auxWorker.url + "--" + auxWorker.gossipDelay + "\r\n";
 
                     break;
                 case "storage":
@@ -113,51 +115,71 @@ namespace ClassLibraryPM {
                     aux_To_add_list = Process.Start(startInfo);
                     list_of_processes.Add(auxStorage.name, aux_To_add_list);
 
-                    ConfigReaded = ConfigReaded + "storage node = " + auxStorage.name + "--" + auxStorage.url + "--" + auxStorage.gossipDelay + "\r\n";
+                    ComandosLidos = ComandosLidos + "storage node = " + auxStorage.name + "--" + auxStorage.url + "--" + auxStorage.gossipDelay + "\r\n";
 
                     break;
                 case "populate":
                     populate_file = words[1];
 
-                    ConfigReaded = ConfigReaded + "populate file: " + populate_file + "\r\n";
+                    ComandosLidos = ComandosLidos + "populate file: " + populate_file + "\r\n";
+
+                    AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
+                    GrpcChannel Scheduler_channel = GrpcChannel.ForAddress(schedulerURL);
+                    Scheduler_Service = new DIDASchedulerServerService.DIDASchedulerServerServiceClient(Scheduler_channel);
+
+                    var pop_path = Path.Combine(Environment.CurrentDirectory, @"files\", populate_file);
+                    string[] data = System.IO.File.ReadAllLines(pop_path);
+
+                    var populate_data = new DIDAPopData { };
+
+                    populate_data.Data.Add(data);
+
+                    empty = Scheduler_Service.RcvPopulateData(populate_data);
 
                     break;
                 case "client":
                     client.app_file = words[2];
                     client.input = words[1];
 
-                    ConfigReaded = ConfigReaded + "client_input = " + client.input + "--client_app_file = " + client.app_file + "\r\n";
+                    ComandosLidos = ComandosLidos + "client_input = " + client.input + "--client_app_file = " + client.app_file + "\r\n";
 
 
-                    var client_path = Path.Combine(Environment.CurrentDirectory, @"files\", client.app_file);
-                    string[] commands = System.IO.File.ReadAllLines(client_path);
+                    var client_app_file_path = Path.Combine(Environment.CurrentDirectory, @"files\", client.app_file);
+                    string[] commands = System.IO.File.ReadAllLines(client_app_file_path);
                     
-                    AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-
-                    GrpcChannel Scheduler_channel = GrpcChannel.ForAddress(schedulerURL);
-                    Scheduler_Service = new DIDASchedulerServerService.DIDASchedulerServerServiceClient(Scheduler_channel);
-
                     var clientRequest = new DIDAClientRequest { Input = client.input };
 
                     clientRequest.Commands.Add(commands);
                     
-                    DIDAEmptyReply empty = Scheduler_Service.RcvClientRequest(clientRequest);
+                    empty = Scheduler_Service.RcvClientRequest(clientRequest);
+
+                    //quando chegamos aqui sabemos que já estão lidos todos os storage, workers e shceduler
+                    //podemos então criar um dicionario com ligacoes rpc para eles. 
                     
                     break;
                 case "debug":
                     debugMode = true;
                     debugModeString = "debug";
 
-                    ConfigReaded = ConfigReaded + "Debug Mode On \r\n";
+                    ComandosLidos = ComandosLidos + "Debug Mode On \r\n";
 
                     break;
                 case "status":
 
+                    ComandosLidos = ComandosLidos + "Status\r\n";
+
                     break;
                 case "listServer":
 
+                    string server_id = words[1];
+
+                    ComandosLidos = ComandosLidos + "List server " + server_id + "\r\n";
+
                     break;
                 case "listGlobal":
+
+                    ComandosLidos = ComandosLidos + "List Global\r\n";
 
                     break;
                 case "crash":
@@ -169,7 +191,7 @@ namespace ClassLibraryPM {
 
                     list_of_processes.Remove(to_crash);
 
-                    ConfigReaded = ConfigReaded + "Crash server " + to_crash + "\r\n";
+                    ComandosLidos = ComandosLidos + "Crash server " + to_crash + "\r\n";
 
                     break;
                 case "wait":
@@ -178,13 +200,24 @@ namespace ClassLibraryPM {
 
                     System.Threading.Thread.Sleep(wait_interval);
 
-                    ConfigReaded = ConfigReaded + "Wait " + words[1] + " milliseconds\r\n";
+                    ComandosLidos = ComandosLidos + "Wait " + words[1] + " milliseconds\r\n";
+                    break;
+                default:
+                    ComandosLidos = ComandosLidos + "Something went wrong! Command readed: " + line + "\r\n";
                     break;
             }
         }
 
 
-        //ler o ficheiro todo de uma vez
+        /*ler o ficheiro todo de uma vez
+         0 - debug
+         1 - storage
+         2 - worker 
+         3 - storage
+         4 - populate
+         5 - client
+         6 - o resto 
+        */
         public void readConfigFile(string file_name) {
             if (!readingFile) {
                 readFile(file_name);
@@ -217,9 +250,9 @@ namespace ClassLibraryPM {
             return end_of_file;
         }
 
-        public string listarConfig() {
+        public string listarComandos() {
 
-            return ConfigReaded;
+            return ComandosLidos;
         }
     }
 

@@ -24,7 +24,7 @@ namespace PMGUI {
             ReadNextLineButton.Enabled = false;
             PM.readConfigFile(textBoxConfigFileName.Text);
 
-            textBoxListConfigs.Text = PM.listarConfig();
+            textBoxListConfigs.Text = PM.listarComandos();
         }
 
         private void ReadNextLineButton_Click(object sender, EventArgs e) {
@@ -37,7 +37,15 @@ namespace PMGUI {
                 buttonReadConfigFile.Enabled = false;
             }
 
-            textBoxListConfigs.Text = PM.listarConfig();
+            textBoxListConfigs.Text = PM.listarComandos();
         }
+
+        private void buttonReadCommand_Click(object sender, EventArgs e) {
+            PM.HandleNextLine(textBoxReadCommand.Text);
+
+            textBoxReadCommand.Text = "";
+            textBoxListConfigs.Text = PM.listarComandos();
+        }
+
     }
 }

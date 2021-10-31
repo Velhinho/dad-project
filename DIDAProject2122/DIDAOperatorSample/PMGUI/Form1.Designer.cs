@@ -29,6 +29,8 @@ namespace PMGUI {
             this.textBoxConfigFileName = new System.Windows.Forms.TextBox();
             this.textBoxListConfigs = new System.Windows.Forms.TextBox();
             this.ReadNextLineButton = new System.Windows.Forms.Button();
+            this.buttonReadCommand = new System.Windows.Forms.Button();
+            this.textBoxReadCommand = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // buttonReadConfigFile
@@ -45,6 +47,7 @@ namespace PMGUI {
             // 
             this.textBoxConfigFileName.Location = new System.Drawing.Point(171, 45);
             this.textBoxConfigFileName.Name = "textBoxConfigFileName";
+            this.textBoxConfigFileName.PlaceholderText = "Script Name";
             this.textBoxConfigFileName.Size = new System.Drawing.Size(582, 27);
             this.textBoxConfigFileName.TabIndex = 1;
             // 
@@ -53,7 +56,9 @@ namespace PMGUI {
             this.textBoxListConfigs.Location = new System.Drawing.Point(13, 78);
             this.textBoxListConfigs.Multiline = true;
             this.textBoxListConfigs.Name = "textBoxListConfigs";
+            this.textBoxListConfigs.PlaceholderText = "Commands Readed";
             this.textBoxListConfigs.ReadOnly = true;
+            this.textBoxListConfigs.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxListConfigs.Size = new System.Drawing.Size(582, 221);
             this.textBoxListConfigs.TabIndex = 2;
             // 
@@ -68,11 +73,31 @@ namespace PMGUI {
             this.ReadNextLineButton.UseVisualStyleBackColor = true;
             this.ReadNextLineButton.Click += new System.EventHandler(this.ReadNextLineButton_Click);
             // 
+            // buttonReadCommand
+            // 
+            this.buttonReadCommand.Location = new System.Drawing.Point(13, 319);
+            this.buttonReadCommand.Name = "buttonReadCommand";
+            this.buttonReadCommand.Size = new System.Drawing.Size(151, 27);
+            this.buttonReadCommand.TabIndex = 4;
+            this.buttonReadCommand.Text = "Read Command";
+            this.buttonReadCommand.UseVisualStyleBackColor = true;
+            this.buttonReadCommand.Click += new System.EventHandler(this.buttonReadCommand_Click);
+            // 
+            // textBoxReadCommand
+            // 
+            this.textBoxReadCommand.Location = new System.Drawing.Point(171, 319);
+            this.textBoxReadCommand.Name = "textBoxReadCommand";
+            this.textBoxReadCommand.PlaceholderText = "Your Command";
+            this.textBoxReadCommand.Size = new System.Drawing.Size(424, 27);
+            this.textBoxReadCommand.TabIndex = 5;
+            // 
             // FormPM
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.textBoxReadCommand);
+            this.Controls.Add(this.buttonReadCommand);
             this.Controls.Add(this.ReadNextLineButton);
             this.Controls.Add(this.textBoxListConfigs);
             this.Controls.Add(this.textBoxConfigFileName);
@@ -90,6 +115,8 @@ namespace PMGUI {
         private System.Windows.Forms.TextBox textBoxConfigFileName;
         private System.Windows.Forms.TextBox textBoxListConfigs;
         private System.Windows.Forms.Button ReadNextLineButton;
+        private System.Windows.Forms.Button buttonReadCommand;
+        private System.Windows.Forms.TextBox textBoxReadCommand;
     }
 }
 
