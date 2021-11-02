@@ -3,14 +3,17 @@ using Grpc.Core;
 using System.Collections.Generic;
 using Grpc.Net.Client;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Scheduler
 {
     class SchedulerServerService : DIDASchedulerServerService.DIDASchedulerServerServiceBase {
 
+        int auto_increment = 0;
+        List<workerStruct> workersList;
         //construtor a completar
-        public SchedulerServerService() {
-
+        public SchedulerServerService(List<workerStruct> workersList) {
+            this.workersList = workersList;
         }
 
         public override Task<DIDAEmptyReply> RcvClientRequest(DIDAClientRequest request, ServerCallContext context) {
@@ -18,6 +21,13 @@ namespace Scheduler
 
             return Task.FromResult<DIDAEmptyReply>(RcvClientRequestImpl(request));
         }
+
+        private DIDAOperatorID OperatorID(string operatorString)
+        {
+            var elems = operatorString.Split(" ");
+            return new DIDAOperatorID { Classname = elems[1], Order = Int32.Parse(elems[2]) };
+        }
+       
 
         private DIDAEmptyReply RcvClientRequestImpl(DIDAClientRequest request) {
 
@@ -32,6 +42,24 @@ namespace Scheduler
                 Console.WriteLine("Command: " + i);
             }
 
+            DIDARequest megaRequest = new DIDARequest
+            {
+                Meta = new DIDAMetaRecord { Id = auto_increment++ },
+                Input = request.Input,
+                Next = 0,
+                ChainSize = list_of_commands.Count
+            };
+
+            var operatorIds = request.Commands.Select(OperatorID);
+            var url = workersList[0].url; //FIXME only one worker
+            var uri = new Uri(url);
+            var host = uri.Host;
+            var port = uri.Port;
+            var output = "";
+            
+            var assignments = operatorIds.Select(op => new DIDAAssignment { Operator = op, Host = host, Port = port, Output = output});
+            megaRequest.Chain.Add(assignments);
+           
             return new DIDAEmptyReply { };
         }
 
@@ -59,7 +87,6 @@ namespace Scheduler
             return new DIDAEmptyReply { };
         }
 
-
     }
     public class Scheduler
     {
@@ -82,7 +109,7 @@ namespace Scheduler
             }
             Server server = new Server
             {
-                Services = { DIDASchedulerServerService.BindService(new SchedulerServerService()) },
+                Services = { DIDASchedulerServerService.BindService(new SchedulerServerService(WorkersList)) },
                 Ports = { new ServerPort(host, port, ServerCredentials.Insecure) }
             };
             server.Start();
@@ -102,9 +129,9 @@ namespace Scheduler
             Console.ReadKey();
             server.ShutdownAsync().Wait();
         }
+    }
         struct workerStruct
         {
             public string name, url;
         }
-    }
 }

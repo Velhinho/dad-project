@@ -52,9 +52,18 @@ namespace Storage
 
         public DIDAVersion WriteRecord(string id, string newValue)
         {
-            var record = GetRecord(id);
+            DIDARecord record = null;
+            try
+            {
+                record = GetRecord(id); 
+            }
+            catch(KeyNotFoundException e)
+            {
+                record = new DIDARecord { Id = id, Val = newValue, Version = new DIDAVersion { ReplicaId = 1, VersionNumber = 1 } };
+            }
             var newRecord = UpdateRecord(record, newValue);
             records[id] = newRecord;
+            Console.Write("Wrote a new record!");
             return newRecord.Version;
         }
     }

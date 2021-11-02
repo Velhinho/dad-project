@@ -42,7 +42,6 @@ namespace ClassLibraryPM {
         // handle de um linha do ficheiro de configs
         public void HandleNextLine(string line) {
 
-            DIDAEmptyReply empty = new DIDAEmptyReply(); //receber respostas vazias
             // infos para inicio de processos
             ProcessStartInfo startInfo;
             List<string> args = new List<string>();
@@ -54,6 +53,7 @@ namespace ClassLibraryPM {
 
             switch (word) {
                 case "scheduler":
+                    AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
                     schedulerURL = words[1];
 
                     startInfo = new ProcessStartInfo("Scheduler.exe"); //set do .exe do processo
@@ -72,6 +72,8 @@ namespace ClassLibraryPM {
                     Process.Start(startInfo);
 
                     ComandosLidos = ComandosLidos + "schedulerURL = " + schedulerURL + "\r\n";
+                    GrpcChannel scheduler_channel = GrpcChannel.ForAddress(schedulerURL);
+                    Scheduler_Service = new DIDASchedulerServerService.DIDASchedulerServerServiceClient(scheduler_channel);
 
                     break;
                 case "worker":
@@ -125,17 +127,20 @@ namespace ClassLibraryPM {
 
                     AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
-                    GrpcChannel Scheduler_channel = GrpcChannel.ForAddress(schedulerURL);
-                    Scheduler_Service = new DIDASchedulerServerService.DIDASchedulerServerServiceClient(Scheduler_channel);
-
                     var pop_path = Path.Combine(Environment.CurrentDirectory, @"files\", populate_file);
                     string[] data = System.IO.File.ReadAllLines(pop_path);
 
-                    var populate_data = new DIDAPopData { };
-
-                    populate_data.Data.Add(data);
-
-                    empty = Scheduler_Service.RcvPopulateData(populate_data);
+                    foreach (StorageStruct storageInfo in StorageList)
+                    {
+                        GrpcChannel storage_channel = GrpcChannel.ForAddress(storageInfo.url);
+                        var storageNode = new DIDAStorageService.DIDAStorageServiceClient(storage_channel);
+                        foreach (string data_line in data)
+                        {
+                            string[] data_keyvalue = data_line.Split(",");
+                            DIDAWriteRequest request = new DIDAWriteRequest { Id = data_keyvalue[0], Val = data_keyvalue[1] };
+                            DIDAVersion reply = storageNode.write(request);
+                        }
+                    }
 
                     break;
                 case "client":
@@ -149,10 +154,9 @@ namespace ClassLibraryPM {
                     string[] commands = System.IO.File.ReadAllLines(client_app_file_path);
                     
                     var clientRequest = new DIDAClientRequest { Input = client.input };
-
                     clientRequest.Commands.Add(commands);
                     
-                    empty = Scheduler_Service.RcvClientRequest(clientRequest);
+                    var empty = Scheduler_Service.RcvClientRequest(clientRequest);
 
                     //quando chegamos aqui sabemos que já estão lidos todos os storage, workers e shceduler
                     //podemos então criar um dicionario com ligacoes rpc para eles. 
