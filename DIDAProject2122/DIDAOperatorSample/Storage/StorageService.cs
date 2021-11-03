@@ -21,7 +21,8 @@ namespace Storage
         {
             Console.WriteLine("Received a read request!");
             var record = StorageNode.read(request.Id, request.Version);
-            return Task.FromResult<DIDAReadReply>(new DIDAReadReply {Record = record});
+            Console.WriteLine(record);
+            return Task.FromResult<DIDAReadReply>(new DIDAReadReply { Record = record });
         }
 
         public override Task<DIDAVersion> updateIfValueIs(DIDAUpdateIfRequest request, ServerCallContext context)
@@ -32,7 +33,9 @@ namespace Storage
 
         public override Task<DIDAVersion> write(DIDAWriteRequest request, ServerCallContext context)
         {
+            Console.WriteLine("Received a write request!");
             var version = StorageNode.write(request.Id, request.Val);
+            Console.WriteLine(version);
             return Task.FromResult<DIDAVersion>(version);
         }
 

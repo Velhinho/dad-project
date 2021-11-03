@@ -54,7 +54,7 @@ namespace ClassLibraryPM {
             switch (word) {
                 case "scheduler":
                     AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-                    schedulerURL = words[1];
+                    schedulerURL = words[2];
 
                     startInfo = new ProcessStartInfo("Scheduler.exe"); //set do .exe do processo
 

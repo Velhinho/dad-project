@@ -6,9 +6,17 @@ namespace Storage
     class StorageNode
     {
         private readonly RecordStorage recordStorage;
+        private readonly DIDAVersion emptyVersion;
+        private readonly DIDARecord emptyRecord;
+
+        public DIDAVersion EmptyVersion => emptyVersion;
+
+        public DIDARecord EmptyRecord => emptyRecord;
 
         public StorageNode()
         {
+            emptyVersion = new DIDAVersion { ReplicaId = -1, VersionNumber = -1 };
+            emptyRecord = new DIDARecord { Id = "", Val = "", Version = emptyVersion };
             this.recordStorage = new RecordStorage();
         }
 
@@ -16,7 +24,7 @@ namespace Storage
         {
             lock (recordStorage)
             {
-                if (version.Equals(null))
+                if (version.Equals(emptyVersion))
                 {
                     return recordStorage.GetRecord(id);
                 }

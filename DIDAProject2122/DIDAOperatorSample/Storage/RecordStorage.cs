@@ -6,65 +6,58 @@ namespace Storage
 {
     class RecordStorage //FIXME only supports one version of each record
     {
-        private Dictionary<string, DIDARecord> records;
+        private readonly Dictionary<string, VersionManager> records;
+        private readonly DIDAVersion emptyVersion;
+        private readonly DIDARecord emptyRecord;
+
+        internal Dictionary<string, VersionManager> Records => records;
+
+        public DIDAVersion EmptyVersion => emptyVersion;
+
+        public DIDARecord EmptyRecord => emptyRecord;
 
         public RecordStorage()
         {
-            records = new Dictionary<string, DIDARecord>();
-            var version = new DIDAVersion { ReplicaId = 1, VersionNumber = 1 };
-            records["a"] = new DIDARecord { Id = "a", Val = "1", Version = version };
-            records["b"] = new DIDARecord { Id = "b", Val = "2", Version = version };
-            records["c"] = new DIDARecord { Id = "c", Val = "3" , Version = version };
-            records["Epic"]  = new DIDARecord { Id = "Epic", Val = "42", Version = version };
+            records = new Dictionary<string, VersionManager>();
+            emptyVersion = new DIDAVersion { ReplicaId = -1, VersionNumber = -1 };
+            emptyRecord = new DIDARecord { Id = "", Val = "", Version = emptyVersion };
         }
 
         public DIDARecord GetRecord(string id)
         {
-            return records[id];
+            try
+            {
+                return records[id].GetHighestRecord();
+            } 
+            catch(KeyNotFoundException e)
+            {
+                return EmptyRecord;
+            }
         }
 
         public DIDARecord GetRecord(string id, DIDAVersion version)
         {
             try
             {
-                return records[id];
+                return Records[id].GetRecord(version.VersionNumber);
             }
-            catch
+            catch(KeyNotFoundException e)
             {
-                Console.WriteLine("Invalid Id");
-                throw new KeyNotFoundException(id);
+                return EmptyRecord;
             }
-        }
-
-        private DIDAVersion UpdateVersion(DIDAVersion oldVersion)
-        {
-            var id = oldVersion.ReplicaId;
-            var newVersionNum = oldVersion.VersionNumber + 1;
-            return new DIDAVersion { ReplicaId = id, VersionNumber = newVersionNum };
-        }
-
-        private DIDARecord UpdateRecord(DIDARecord oldRecord, string newVal)
-        {
-            var id = oldRecord.Id;
-            var newVersion = UpdateVersion(oldRecord.Version);
-            return new DIDARecord { Id = id, Version = newVersion, Val = newVal };
         }
 
         public DIDAVersion WriteRecord(string id, string newValue)
         {
-            DIDARecord record = null;
             try
             {
-                record = GetRecord(id); 
+                return records[id].UpdateRecord(newValue).Version;
             }
             catch(KeyNotFoundException e)
             {
-                record = new DIDARecord { Id = id, Val = newValue, Version = new DIDAVersion { ReplicaId = 1, VersionNumber = 1 } };
+                records[id] = new VersionManager(id, newValue);
+                return records[id].GetHighestRecord().Version;
             }
-            var newRecord = UpdateRecord(record, newValue);
-            records[id] = newRecord;
-            Console.Write("Wrote a new record!");
-            return newRecord.Version;
         }
     }
 }

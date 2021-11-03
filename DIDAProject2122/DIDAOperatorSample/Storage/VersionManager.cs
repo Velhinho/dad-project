@@ -7,6 +7,16 @@ namespace Storage
     {
         private readonly List<DIDARecord> versions;
 
+        public VersionManager(string id, string value)
+        {
+            var version = new DIDAVersion { ReplicaId = -1, VersionNumber = 0 };
+            var record = new DIDARecord { Id = id, Val = value, Version = version };
+            versions = new List<DIDARecord>
+            {
+                record
+            };
+        }
+
         public DIDARecord GetHighestRecord()
         {
             var highestVersion = versions.Select(record => record.Version.VersionNumber).Max();
@@ -28,8 +38,9 @@ namespace Storage
             return new DIDAVersion { ReplicaId = id, VersionNumber = newVersionNum };
         }
 
-        public DIDARecord UpdateRecord(DIDARecord oldRecord, string newVal)
+        public DIDARecord UpdateRecord(string newVal)
         {
+            var oldRecord = GetHighestRecord();
             var id = oldRecord.Id;
             var newVersion = UpdateVersion(oldRecord.Version);
             var newRecord = new DIDARecord { Id = id, Version = newVersion, Val = newVal };
