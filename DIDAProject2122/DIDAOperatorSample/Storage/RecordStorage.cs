@@ -59,5 +59,25 @@ namespace Storage
                 return records[id].GetHighestRecord().Version;
             }
         }
+
+        public DIDAVersion UpdateIfValue(string id, string oldValue, string newValue)
+        {
+            try
+            {
+                if(records[id].GetHighestRecord().Val == oldValue)
+                {
+                    return WriteRecord(id, newValue);
+                }
+                else
+                {
+                    return EmptyVersion;
+                }
+            }
+            catch(KeyNotFoundException e)
+            {
+                Console.WriteLine("UpdateIfValue: " + e.Message);
+                return EmptyVersion;
+            }
+        }
     }
 }

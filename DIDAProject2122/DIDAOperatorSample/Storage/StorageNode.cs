@@ -45,7 +45,10 @@ namespace Storage
 
         public DIDAVersion updateIfValueIs(string id, string oldvalue, string newvalue)
         {
-            throw new NotImplementedException();
+            lock(recordStorage)
+            {
+                return recordStorage.UpdateIfValue(id, oldvalue, newvalue);
+            }
         }
     }
 }
