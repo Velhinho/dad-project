@@ -6,6 +6,7 @@ service DIDAStorageService {
   rpc updateIfValueIs(DIDAUpdateIfRequest) returns (DIDAVersion);
   rpc printStatus(DIDAPrintRequest) returns (DIDAPrintReply);
   rpc listServer(DIDAListServerRequest) returns (DIDAListServerReply);
+  rpc sendStorageInfo(DIDAStorageInfoRequest) returns (DIDAStorageInfoReply);
 }
 
 message DIDAReadRequest {
@@ -52,5 +53,13 @@ message DIDAListServerRequest {
 }
 
 message DIDAListServerReply {
+
+}
+
+message DIDAStorageInfoRequest {
+	repeated string storageList = 1;
+}
+
+message DIDAStorageInfoReply {
 
 }

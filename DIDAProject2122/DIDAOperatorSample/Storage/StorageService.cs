@@ -9,6 +9,7 @@ namespace Storage
         private string storage_id;
         private int gossip_delay;
         private readonly StorageNode StorageNode;
+        private List<StorageStruct> storageInfo = new List<StorageStruct>();
         
         public StorageService(string id, int delay, StorageNode storageNode)
         {
@@ -46,6 +47,23 @@ namespace Storage
         public override Task<DIDAListServerReply> listServer(DIDAListServerRequest request, ServerCallContext context)
         {
             throw new NotImplementedException();
+        }
+        public override Task<DIDAStorageInfoReply> sendStorageInfo(DIDAStorageInfoRequest request, ServerCallContext context)
+        {
+            foreach(string line in request.StorageList)
+            {
+                string[] parsedLine = line.Split("#");
+                if (!parsedLine[0].Equals(storage_id))
+                {
+                    storageInfo.Add(new StorageStruct { name = parsedLine[0], url = parsedLine[1] });
+                }
+            }
+            return Task.FromResult<DIDAStorageInfoReply>(new DIDAStorageInfoReply { });
+        }
+
+        struct StorageStruct
+        {
+            public string name, url;
         }
     }
 }

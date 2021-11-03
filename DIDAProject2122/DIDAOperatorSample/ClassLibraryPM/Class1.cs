@@ -11,6 +11,8 @@ namespace ClassLibraryPM {
         private string schedulerURL;
         List<workerStruct> WorkersList = new List<workerStruct>();
         List<StorageStruct> StorageList = new List<StorageStruct>();
+        Dictionary<string, DIDAStorageService.DIDAStorageServiceClient> StorageChannelDict = 
+                new Dictionary<string, DIDAStorageService.DIDAStorageServiceClient>();
         string populate_file;
         bool debugMode = false;
         string debugModeString = "noDebug";
@@ -74,6 +76,24 @@ namespace ClassLibraryPM {
                     ComandosLidos = ComandosLidos + "schedulerURL = " + schedulerURL + "\r\n";
                     GrpcChannel scheduler_channel = GrpcChannel.ForAddress(schedulerURL);
                     Scheduler_Service = new DIDASchedulerServerService.DIDASchedulerServerServiceClient(scheduler_channel);
+
+                    List<string> requestList = new List<string>();
+
+                    foreach(StorageStruct storage in StorageList)
+                    {
+                        GrpcChannel storage_channel = GrpcChannel.ForAddress(storage.url);
+                        var Storage_Service = new DIDAStorageService.DIDAStorageServiceClient(storage_channel);
+                        StorageChannelDict.Add(storage.name, Storage_Service);
+                        string aux = storage.name + "#" + storage.url;
+                        requestList.Add(aux);
+                    }
+                    DIDAStorageInfoRequest infoRequest = new DIDAStorageInfoRequest {  };
+                    infoRequest.StorageList.Add(requestList);
+                    foreach(KeyValuePair<string, DIDAStorageService.DIDAStorageServiceClient> item in StorageChannelDict)
+                    {
+                        item.Value.sendStorageInfo(infoRequest);
+                    }
+
 
                     break;
                 case "worker":
