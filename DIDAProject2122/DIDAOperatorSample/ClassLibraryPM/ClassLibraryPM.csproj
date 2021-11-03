@@ -25,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="..\Storage\protos\DIDAStorage.proto" GrpcServices="Client">
+      <Link>protos\DIDAStorage.proto</Link>
+    </Protobuf>
     <Protobuf Include="protos\DIDAScheduler.proto" GrpcServices="Client" />
   </ItemGroup>
 
