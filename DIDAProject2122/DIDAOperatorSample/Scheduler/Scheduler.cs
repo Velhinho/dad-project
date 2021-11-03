@@ -30,6 +30,7 @@ namespace Scheduler
        
 
         private DIDAEmptyReply RcvClientRequestImpl(DIDAClientRequest request) {
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
             string input = request.Input;
             List<string> list_of_commands = new List<string>();
@@ -59,7 +60,11 @@ namespace Scheduler
             
             var assignments = operatorIds.Select(op => new DIDAAssignment { Operator = op, Host = host, Port = port, Output = output});
             megaRequest.Chain.Add(assignments);
-           
+
+            GrpcChannel channel = GrpcChannel.ForAddress(url);
+            var worker = new DIDAWorkerServerService.DIDAWorkerServerServiceClient(channel);
+            worker.work(megaRequest);
+
             return new DIDAEmptyReply { };
         }
 
