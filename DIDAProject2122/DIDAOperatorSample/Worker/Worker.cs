@@ -5,6 +5,7 @@ using System.Reflection;
 using System.IO;
 using DIDAWorker;
 using System.Collections.Generic;
+using Grpc.Net.Client;
 
 namespace Worker
 {
@@ -28,13 +29,17 @@ namespace Worker
 
         private DIDAReply WorkImpl(DIDARequest request)
         {
-            string class_to_load = request.Chain[request.Next].Operator.Classname;
-            Console.WriteLine("Received request to use " + class_to_load);
-            IDIDAOperator opObj = createOpInstance(class_to_load);
-            opObj.ConfigureStorage(storageProxy);
-            Console.WriteLine("Configured Storage!");
-            var meta = new DIDAWorker.DIDAMetaRecord { Id = request.Meta.Id };
-            opObj.ProcessRecord(meta, request.Input, request.Chain[request.Next].Output);
+            while (request.Next < request.ChainSize)
+            {
+                string class_to_load = request.Chain[request.Next].Operator.Classname;
+                Console.WriteLine("Received request to use " + class_to_load);
+                IDIDAOperator opObj = createOpInstance(class_to_load);
+                opObj.ConfigureStorage(storageProxy);
+                Console.WriteLine("Configured Storage!");
+                var meta = new DIDAWorker.DIDAMetaRecord { Id = request.Meta.Id };
+                opObj.ProcessRecord(meta, request.Input, request.Chain[request.Next].Output);
+                request.Next++;
+            }
             Console.WriteLine("Finished processing record helll yeah");
             return new DIDAReply
             {
