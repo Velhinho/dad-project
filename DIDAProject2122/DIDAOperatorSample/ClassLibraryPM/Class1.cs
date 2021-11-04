@@ -92,7 +92,7 @@ namespace ClassLibraryPM {
                     infoRequest.StorageList.Add(requestList);
                     foreach(KeyValuePair<string, DIDAStorageService.DIDAStorageServiceClient> item in StorageChannelDict)
                     {
-                        item.Value.sendStorageInfo(infoRequest);
+                        item.Value.sendStorageInfoAsync(infoRequest);
                     }
 
 
@@ -177,7 +177,7 @@ namespace ClassLibraryPM {
                     var clientRequest = new DIDAClientRequest { Input = client.input };
                     clientRequest.Commands.Add(commands);
                     
-                    var empty = Scheduler_Service.RcvClientRequest(clientRequest);
+                    Scheduler_Service.RcvClientRequestAsync(clientRequest);
 
                     //quando chegamos aqui sabemos que já estão lidos todos os storage, workers e shceduler
                     //podemos então criar um dicionario com ligacoes rpc para eles. 

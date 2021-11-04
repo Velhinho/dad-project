@@ -63,7 +63,7 @@ namespace Scheduler
 
             GrpcChannel channel = GrpcChannel.ForAddress(url);
             var worker = new DIDAWorkerServerService.DIDAWorkerServerServiceClient(channel);
-            worker.work(megaRequest);
+            worker.workAsync(megaRequest);
 
             return new DIDAEmptyReply { };
         }
