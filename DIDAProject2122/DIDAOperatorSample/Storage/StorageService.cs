@@ -20,9 +20,7 @@ namespace Storage
 
         public override Task<DIDAReadReply> read(DIDAReadRequest request, ServerCallContext context)
         {
-            Console.WriteLine("Received a read request!");
             var record = StorageNode.read(request.Id, request.Version);
-            Console.WriteLine(record);
             return Task.FromResult<DIDAReadReply>(new DIDAReadReply { Record = record });
         }
 
@@ -35,8 +33,9 @@ namespace Storage
         public override Task<DIDAVersion> write(DIDAWriteRequest request, ServerCallContext context)
         {
             Console.WriteLine("Received a write request!");
+            Console.WriteLine("Request: " + request);
             var version = StorageNode.write(request.Id, request.Val);
-            Console.WriteLine(version);
+            Console.WriteLine("Version " + version);
             return Task.FromResult<DIDAVersion>(version);
         }
 

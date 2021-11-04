@@ -158,7 +158,7 @@ namespace ClassLibraryPM {
                         {
                             string[] data_keyvalue = data_line.Split(",");
                             DIDAWriteRequest request = new DIDAWriteRequest { Id = data_keyvalue[0], Val = data_keyvalue[1] };
-                            DIDAVersion reply = storageNode.write(request);
+                            storageNode.writeAsync(request);
                         }
                     }
 

@@ -5,33 +5,30 @@ namespace Storage
 {
     class VersionManager
     {
-        private readonly List<DIDARecord> versions;
+        private Dictionary<int, DIDARecord> versions;
 
         public VersionManager(string id, string value)
         {
-            var version = new DIDAVersion { ReplicaId = -1, VersionNumber = 0 };
+            var version = new DIDAVersion { ReplicaId = -1, VersionNumber = 1 };
             var record = new DIDARecord { Id = id, Val = value, Version = version };
-            versions = new List<DIDARecord>
+            versions = new Dictionary<int, DIDARecord>
             {
-                record
+                [1] = record
             };
         }
 
         public DIDARecord GetHighestRecord()
         {
-            var highestVersion = versions.Select(record => record.Version.VersionNumber).Max();
-            return versions.Where(record => record.Version.VersionNumber == highestVersion)
-                .FirstOrDefault();
+            var highestVersion = versions.Keys.Max();
+            return versions[highestVersion];
         }
 
         public DIDARecord GetRecord(int versionNumber)
         {
-            var record = versions.Where((record) => record.Version.VersionNumber == versionNumber)
-                .FirstOrDefault();
-            return record;
+            return versions[versionNumber];
         }
 
-        private DIDAVersion UpdateVersion(DIDAVersion oldVersion)
+        private DIDAVersion IncrementVersion(DIDAVersion oldVersion)
         {
             var id = oldVersion.ReplicaId;
             var newVersionNum = oldVersion.VersionNumber + 1;
@@ -42,9 +39,10 @@ namespace Storage
         {
             var oldRecord = GetHighestRecord();
             var id = oldRecord.Id;
-            var newVersion = UpdateVersion(oldRecord.Version);
+            var highestVersion = oldRecord.Version.VersionNumber;
+            var newVersion = IncrementVersion(oldRecord.Version);
             var newRecord = new DIDARecord { Id = id, Version = newVersion, Val = newVal };
-            versions.Append(newRecord);
+            versions[highestVersion] = newRecord;
             return newRecord;
         }
     }
