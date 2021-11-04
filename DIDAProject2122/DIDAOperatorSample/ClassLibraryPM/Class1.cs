@@ -34,7 +34,28 @@ namespace ClassLibraryPM {
 
         //comunicar com scheduler 
         DIDASchedulerServerService.DIDASchedulerServerServiceClient Scheduler_Service;
-        
+
+
+        Dictionary<string, DIDAPCSServerService.DIDAPCSServerServiceClient> PCSs_dict =
+            new Dictionary<string, DIDAPCSServerService.DIDAPCSServerServiceClient>();
+
+        List<string> PCSs_urls = new List<string> { "http://localhost:10000" };
+
+        public PM_logic() {
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
+            //inicializar canais para os pcs
+
+            foreach(string url in PCSs_urls) {
+                GrpcChannel pcs_channel = GrpcChannel.ForAddress(url);
+                var pcs_Service = new DIDAPCSServerService.DIDAPCSServerServiceClient(pcs_channel);
+
+                Uri uri = new Uri(url);
+                string ip = uri.Host;
+
+                PCSs_dict.Add(ip, pcs_Service);
+            }
+        }
 
         //le um ficheiro
         public void readFile(string file_name) {
@@ -56,23 +77,20 @@ namespace ClassLibraryPM {
 
             switch (word) {
                 case "scheduler":
-                    AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+                    
                     schedulerURL = words[2];
+                    Uri uri = new Uri(schedulerURL);
+                    string scheduler_IP = uri.Host;
 
-                    startInfo = new ProcessStartInfo("Scheduler.exe"); //set do .exe do processo
-
-                    //args a passar
-                    //adicionar aqui informacoes de storage, workers, o necessario
-                    args.Clear();
-                    args.Add(schedulerURL); // definir os argumentos
-                    foreach (workerStruct worker in WorkersList)
-                    {
-                        args.Add(worker.name + "#" + worker.url);
+                    DIDAcreateScheduler createSchedulerRequest = new DIDAcreateScheduler();
+                    createSchedulerRequest.Id = words[1];
+                    createSchedulerRequest.Url = schedulerURL;
+                    
+                    foreach (workerStruct worker in WorkersList) {
+                        createSchedulerRequest.Workers.Add(worker.name + "#" + worker.url);
                     }
 
-                    startInfo.Arguments = string.Join(" ", args.ToArray()); //passa como string mas vê como array no processo iniciado
-
-                    Process.Start(startInfo);
+                    PCSs_dict[scheduler_IP].CreateRemoteSchedulerAsync(createSchedulerRequest);
 
                     ComandosLidos = ComandosLidos + "schedulerURL = " + schedulerURL + "\r\n";
                     GrpcChannel scheduler_channel = GrpcChannel.ForAddress(schedulerURL);
@@ -145,8 +163,6 @@ namespace ClassLibraryPM {
                     populate_file = words[1];
 
                     ComandosLidos = ComandosLidos + "populate file: " + populate_file + "\r\n";
-
-                    AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
                     var pop_path = Path.Combine(Environment.CurrentDirectory, @"files\", populate_file);
                     string[] data = System.IO.File.ReadAllLines(pop_path);

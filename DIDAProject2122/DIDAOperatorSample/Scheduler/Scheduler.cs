@@ -119,18 +119,7 @@ namespace Scheduler
             };
             server.Start();
             Console.WriteLine("Server started on port " + port);
-            
-            /*DIDARequest request = new DIDARequest
-            {
-                Input = "Epic",
-                Next = 0,
-                Meta = new DIDAMetaRecord { Id = 1 }
-            };
-            request.Chain.Add(new DIDAAssignment { Output = "", Operator = new DIDAOperatorID { Classname = "AddOperator" } });
-            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-            GrpcChannel channel = GrpcChannel.ForAddress(WorkersList[0].url);
-            var worker = new DIDAWorkerServerService.DIDAWorkerServerServiceClient(channel);
-            DIDAReply result = worker.work(request);*/
+          
             Console.ReadKey();
             server.ShutdownAsync().Wait();
         }
