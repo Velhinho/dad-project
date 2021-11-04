@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Grpc.Core;
 using System.Collections.Generic;
+using Grpc.Net.Client;
 
 namespace Storage
 {
@@ -10,7 +11,9 @@ namespace Storage
         private int gossip_delay;
         private readonly StorageNode StorageNode;
         private List<StorageStruct> storageInfo = new List<StorageStruct>();
-        
+        List<DIDAStorageService.DIDAStorageServiceClient> _clients = new List<DIDAStorageService.DIDAStorageServiceClient>();
+        List<Grpc.Net.Client.GrpcChannel> _channels = new List<Grpc.Net.Client.GrpcChannel>();
+
         public StorageService(string id, int delay, StorageNode storageNode)
         {
             storage_id = id;
@@ -49,13 +52,20 @@ namespace Storage
         }
         public override Task<DIDAStorageInfoReply> sendStorageInfo(DIDAStorageInfoRequest request, ServerCallContext context)
         {
-            foreach(string line in request.StorageList)
+            foreach (string line in request.StorageList)
             {
                 string[] parsedLine = line.Split("#");
                 if (!parsedLine[0].Equals(storage_id))
                 {
                     storageInfo.Add(new StorageStruct { name = parsedLine[0], url = parsedLine[1] });
                 }
+            }
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+            foreach (StorageStruct n in storageInfo)
+            {
+                var channel = Grpc.Net.Client.GrpcChannel.ForAddress(n.url);
+                _channels.Add(channel);
+                _clients.Add(new DIDAStorageService.DIDAStorageServiceClient(channel));
             }
             return Task.FromResult<DIDAStorageInfoReply>(new DIDAStorageInfoReply { });
         }

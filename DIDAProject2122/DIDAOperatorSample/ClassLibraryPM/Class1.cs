@@ -11,6 +11,7 @@ namespace ClassLibraryPM {
         private string schedulerURL;
         List<workerStruct> WorkersList = new List<workerStruct>();
         List<StorageStruct> StorageList = new List<StorageStruct>();
+        int replicaIdAutoIncrement = 0;
         Dictionary<string, DIDAStorageService.DIDAStorageServiceClient> StorageChannelDict = 
                 new Dictionary<string, DIDAStorageService.DIDAStorageServiceClient>();
         string populate_file;
@@ -131,7 +132,7 @@ namespace ClassLibraryPM {
 
                     startInfo = new ProcessStartInfo("Storage.exe"); //set do .exe do processo
                                                                      //args a passar, adicionar o necessario 
-                    args.Add(auxStorage.name + " " + auxStorage.url + " " + auxStorage.gossipDelay);
+                    args.Add(auxStorage.name + " " + auxStorage.url + " " + auxStorage.gossipDelay + " " + replicaIdAutoIncrement++);
                     startInfo.Arguments = string.Join(" ", args.ToArray());
 
                     aux_To_add_list = Process.Start(startInfo);

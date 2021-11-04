@@ -21,7 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Protobuf Include="protos\DIDAStorage.proto" GrpcServices="Server" />
+		<Protobuf Include="protos\DIDAStorage.proto" GrpcServices="Both" />
 	</ItemGroup>
 
 	<ItemGroup>

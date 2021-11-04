@@ -8,16 +8,18 @@ namespace Storage
         private readonly RecordStorage recordStorage;
         private readonly DIDAVersion emptyVersion;
         private readonly DIDARecord emptyRecord;
+        private readonly int replicaId;
 
         public DIDAVersion EmptyVersion => emptyVersion;
 
         public DIDARecord EmptyRecord => emptyRecord;
 
-        public StorageNode()
+        public StorageNode(int replicaId)
         {
             emptyVersion = new DIDAVersion { ReplicaId = -1, VersionNumber = -1 };
             emptyRecord = new DIDARecord { Id = "", Val = "", Version = emptyVersion };
             this.recordStorage = new RecordStorage();
+            this.replicaId = replicaId;
         }
 
         public DIDARecord read(string id, DIDAVersion version)
