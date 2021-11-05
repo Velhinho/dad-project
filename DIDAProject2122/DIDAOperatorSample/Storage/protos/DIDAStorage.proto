@@ -7,6 +7,8 @@ service DIDAStorageService {
   rpc printStatus(DIDAPrintRequest) returns (DIDAPrintReply);
   rpc listServer(DIDAListServerRequest) returns (DIDAListServerReply);
   rpc sendStorageInfo(DIDAStorageInfoRequest) returns (DIDAStorageInfoReply);
+  rpc pushGossip(DIDAPushGossipRequest) returns (DIDAPushGossipReply);
+  rpc populate(DIDAWriteRequest) returns (DIDAVersion);
 }
 
 message DIDAReadRequest {
@@ -61,5 +63,14 @@ message DIDAStorageInfoRequest {
 }
 
 message DIDAStorageInfoReply {
+
+}
+
+message DIDAPushGossipRequest {
+	repeated DIDAWriteRequest writeList = 1;
+	repeated DIDAUpdateIfRequest updateList = 2;
+}
+
+message DIDAPushGossipReply {
 
 }
