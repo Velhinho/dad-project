@@ -39,6 +39,8 @@ namespace ClassLibraryPM {
         Dictionary<string, DIDAPCSServerService.DIDAPCSServerServiceClient> PCSs_dict =
             new Dictionary<string, DIDAPCSServerService.DIDAPCSServerServiceClient>();
 
+        Dictionary<string, string> Map_name_to_ip = new Dictionary<string, string>(); //mapeia o nome do node com o ip do node, para usar no crash
+
         List<string> PCSs_urls = new List<string> { "http://localhost:10000" };
 
         public PM_logic() {
@@ -77,13 +79,13 @@ namespace ClassLibraryPM {
 
             switch (word) {
                 case "scheduler":
-                    
+                    string schedulerName = words[1];
                     schedulerURL = words[2];
-                    Uri uri = new Uri(schedulerURL);
-                    string scheduler_IP = uri.Host;
+                    Uri scheduler_uri = new Uri(schedulerURL);
+                    string scheduler_IP = scheduler_uri.Host;
 
                     DIDAcreateScheduler createSchedulerRequest = new DIDAcreateScheduler();
-                    createSchedulerRequest.Id = words[1];
+                    createSchedulerRequest.Name = words[1];
                     createSchedulerRequest.Url = schedulerURL;
                     
                     foreach (workerStruct worker in WorkersList) {
@@ -91,6 +93,7 @@ namespace ClassLibraryPM {
                     }
 
                     PCSs_dict[scheduler_IP].CreateRemoteSchedulerAsync(createSchedulerRequest);
+                    Map_name_to_ip.Add(schedulerName, scheduler_IP);
 
                     ComandosLidos = ComandosLidos + "schedulerURL = " + schedulerURL + "\r\n";
                     GrpcChannel scheduler_channel = GrpcChannel.ForAddress(schedulerURL);
@@ -98,8 +101,7 @@ namespace ClassLibraryPM {
 
                     List<string> requestList = new List<string>();
 
-                    foreach(StorageStruct storage in StorageList)
-                    {
+                    foreach(StorageStruct storage in StorageList) {
                         GrpcChannel storage_channel = GrpcChannel.ForAddress(storage.url);
                         var Storage_Service = new DIDAStorageService.DIDAStorageServiceClient(storage_channel);
                         StorageChannelDict.Add(storage.name, Storage_Service);
@@ -108,11 +110,9 @@ namespace ClassLibraryPM {
                     }
                     DIDAStorageInfoRequest infoRequest = new DIDAStorageInfoRequest {  };
                     infoRequest.StorageList.Add(requestList);
-                    foreach(KeyValuePair<string, DIDAStorageService.DIDAStorageServiceClient> item in StorageChannelDict)
-                    {
+                    foreach(KeyValuePair<string, DIDAStorageService.DIDAStorageServiceClient> item in StorageChannelDict) {
                         item.Value.sendStorageInfoAsync(infoRequest);
                     }
-
 
                     break;
                 case "worker":
@@ -123,19 +123,22 @@ namespace ClassLibraryPM {
 
                     WorkersList.Add(auxWorker);
 
-                    startInfo = new ProcessStartInfo("Worker.exe"); //set do .exe do processo
+                    DIDAcreateWorker createWorkerRequest = new DIDAcreateWorker();
+                    createWorkerRequest.Name = auxWorker.name;
+                    createWorkerRequest.Gossip = auxWorker.gossipDelay;
+                    createWorkerRequest.Url = auxWorker.url;
+                    createWorkerRequest.Debug = debugModeString;
+                    
+                    Uri worker_uri = new Uri(auxWorker.url);
+                    string worker_IP = worker_uri.Host;
 
-                    //args a passar, adicionar o necessario 
-                    args.Clear();
-                    args.Add(debugModeString + " " + auxWorker.name + " " + auxWorker.url + " " + auxWorker.gossipDelay);
-                    foreach (StorageStruct storage in StorageList)
-                    {
-                        args.Add(storage.name + "#" + storage.url);
+                    foreach (StorageStruct storage in StorageList) {
+                        createWorkerRequest.Storage.Add(storage.name + "#" + storage.url);
                     }
-                    startInfo.Arguments = string.Join(" ", args.ToArray());
 
-                    aux_To_add_list = Process.Start(startInfo);
-                    list_of_processes.Add(auxWorker.name, aux_To_add_list);
+                    PCSs_dict[worker_IP].CreateRemoteWorkerAsync(createWorkerRequest);
+
+                    Map_name_to_ip.Add(auxWorker.name, worker_IP);
 
                     ComandosLidos = ComandosLidos + "worker node = " + auxWorker.name + "--" + auxWorker.url + "--" + auxWorker.gossipDelay + "\r\n";
 
@@ -148,13 +151,19 @@ namespace ClassLibraryPM {
 
                     StorageList.Add(auxStorage);
 
-                    startInfo = new ProcessStartInfo("Storage.exe"); //set do .exe do processo
-                                                                     //args a passar, adicionar o necessario 
-                    args.Add(auxStorage.name + " " + auxStorage.url + " " + auxStorage.gossipDelay + " " + replicaIdAutoIncrement++);
-                    startInfo.Arguments = string.Join(" ", args.ToArray());
+                    DIDAcreateStorage createStrorageRequest = new DIDAcreateStorage();
+                    createStrorageRequest.Debug = debugModeString;
+                    createStrorageRequest.Gossip = auxStorage.gossipDelay;
+                    createStrorageRequest.Name = auxStorage.name;
+                    createStrorageRequest.Url = auxStorage.url;
+                    createStrorageRequest.ReplicaIdAutoIncrement = replicaIdAutoIncrement++;
 
-                    aux_To_add_list = Process.Start(startInfo);
-                    list_of_processes.Add(auxStorage.name, aux_To_add_list);
+                    Uri storage_uri = new Uri(auxStorage.url);
+                    string storage_IP = storage_uri.Host;
+
+                    PCSs_dict[storage_IP].CreateRemoteStorageAsync(createStrorageRequest);
+
+                    Map_name_to_ip.Add(auxStorage.name, storage_IP);
 
                     ComandosLidos = ComandosLidos + "storage node = " + auxStorage.name + "--" + auxStorage.url + "--" + auxStorage.gossipDelay + "\r\n";
 
@@ -167,8 +176,7 @@ namespace ClassLibraryPM {
                     var pop_path = Path.Combine(Environment.CurrentDirectory, @"files\", populate_file);
                     string[] data = System.IO.File.ReadAllLines(pop_path);
 
-                    foreach (StorageStruct storageInfo in StorageList)
-                    {
+                    foreach (StorageStruct storageInfo in StorageList) {
                         GrpcChannel storage_channel = GrpcChannel.ForAddress(storageInfo.url);
                         var storageNode = new DIDAStorageService.DIDAStorageServiceClient(storage_channel);
                         foreach (string data_line in data)
@@ -194,9 +202,6 @@ namespace ClassLibraryPM {
                     clientRequest.Commands.Add(commands);
                     
                     Scheduler_Service.RcvClientRequestAsync(clientRequest);
-
-                    //quando chegamos aqui sabemos que já estão lidos todos os storage, workers e shceduler
-                    //podemos então criar um dicionario com ligacoes rpc para eles. 
                     
                     break;
                 case "debug":
@@ -227,10 +232,17 @@ namespace ClassLibraryPM {
 
                     string to_crash = words[1];
 
-                    Process to_kill = list_of_processes[to_crash];
+                    /*Process to_kill = list_of_processes[to_crash];
                     to_kill.Kill();
 
-                    list_of_processes.Remove(to_crash);
+                    list_of_processes.Remove(to_crash);*/
+
+                    string to_crash_ip = Map_name_to_ip[to_crash];
+
+                    DIDAServer server_to_crash = new DIDAServer();
+                    server_to_crash.Name = to_crash;
+
+                    PCSs_dict[to_crash_ip].KillServerAsync(server_to_crash);
 
                     ComandosLidos = ComandosLidos + "Crash server " + to_crash + "\r\n";
 
