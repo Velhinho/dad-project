@@ -66,9 +66,20 @@ message DIDAStorageInfoReply {
 
 }
 
+enum LogEntryType {
+	Write = 0;
+	UpdateIfValue = 1;
+}
+
+message LogEntry {
+	string id = 1;
+	string newValue = 2;
+	string oldValue = 3;
+	LogEntryType type = 4;
+}
+
 message DIDAPushGossipRequest {
-	repeated DIDAWriteRequest writeList = 1;
-	repeated DIDAUpdateIfRequest updateList = 2;
+	repeated LogEntry log = 1;
 }
 
 message DIDAPushGossipReply {
