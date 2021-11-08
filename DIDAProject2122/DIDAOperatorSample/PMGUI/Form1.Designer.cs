@@ -31,6 +31,7 @@ namespace PMGUI {
             this.ReadNextLineButton = new System.Windows.Forms.Button();
             this.buttonReadCommand = new System.Windows.Forms.Button();
             this.textBoxReadCommand = new System.Windows.Forms.TextBox();
+            this.textBoxDebug = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // buttonReadConfigFile
@@ -91,11 +92,23 @@ namespace PMGUI {
             this.textBoxReadCommand.Size = new System.Drawing.Size(424, 27);
             this.textBoxReadCommand.TabIndex = 5;
             // 
+            // textBoxDebug
+            // 
+            this.textBoxDebug.Location = new System.Drawing.Point(12, 352);
+            this.textBoxDebug.Multiline = true;
+            this.textBoxDebug.Name = "textBoxDebug";
+            this.textBoxDebug.PlaceholderText = "Debug";
+            this.textBoxDebug.ReadOnly = true;
+            this.textBoxDebug.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxDebug.Size = new System.Drawing.Size(582, 221);
+            this.textBoxDebug.TabIndex = 6;
+            // 
             // FormPM
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 601);
+            this.Controls.Add(this.textBoxDebug);
             this.Controls.Add(this.textBoxReadCommand);
             this.Controls.Add(this.buttonReadCommand);
             this.Controls.Add(this.ReadNextLineButton);
@@ -117,6 +130,7 @@ namespace PMGUI {
         private System.Windows.Forms.Button ReadNextLineButton;
         private System.Windows.Forms.Button buttonReadCommand;
         private System.Windows.Forms.TextBox textBoxReadCommand;
+        private System.Windows.Forms.TextBox textBoxDebug;
     }
 }
 

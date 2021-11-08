@@ -6,7 +6,9 @@
 
   <ItemGroup>
     <None Remove="protos\DIDAPCS.proto" />
-    <None Remove="protos\DIDAScheduler.proto" />
+    <None Remove="protos\DIDASchedulerServer.proto" />
+    <None Remove="protos\DIDAStorage.proto" />
+    <None Remove="protos\DIDAWorkerServer.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,18 +21,12 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Scheduler\Scheduler.csproj" />
-    <ProjectReference Include="..\Storage\Storage.csproj" />
-    <ProjectReference Include="..\Worker\Worker.csproj" />
-  </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\Storage\protos\DIDAStorage.proto" GrpcServices="Client">
-      <Link>protos\DIDAStorage.proto</Link>
-    </Protobuf>
     <Protobuf Include="protos\DIDAPCS.proto" GrpcServices="Client" />
-    <Protobuf Include="protos\DIDAScheduler.proto" GrpcServices="Client" />
+    <Protobuf Include="protos\DIDASchedulerServer.proto" GrpcServices="Client" />
+    <Protobuf Include="protos\DIDAStorage.proto" GrpcServices="Client" />
+    <Protobuf Include="protos\DIDAWorkerServer.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>

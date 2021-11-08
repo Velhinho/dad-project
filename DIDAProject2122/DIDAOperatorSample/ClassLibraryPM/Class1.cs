@@ -12,14 +12,11 @@ namespace ClassLibraryPM {
         List<workerStruct> WorkersList = new List<workerStruct>();
         List<StorageStruct> StorageList = new List<StorageStruct>();
         int replicaIdAutoIncrement = 0;
-        Dictionary<string, DIDAStorageService.DIDAStorageServiceClient> StorageChannelDict = 
-                new Dictionary<string, DIDAStorageService.DIDAStorageServiceClient>();
+        
         string populate_file;
         bool debugMode = false;
         string debugModeString = "noDebug";
         ClientStruct client = new ClientStruct();
-
-        Dictionary<string, Process> list_of_processes = new Dictionary<string, Process>();
 
         bool readingFile = false;
         int currentLine = 0;
@@ -39,16 +36,19 @@ namespace ClassLibraryPM {
         Dictionary<string, DIDAPCSServerService.DIDAPCSServerServiceClient> PCSs_dict =
             new Dictionary<string, DIDAPCSServerService.DIDAPCSServerServiceClient>();
 
+        Dictionary<string, DIDAStorageService.DIDAStorageServiceClient> StorageChannelDict =
+                new Dictionary<string, DIDAStorageService.DIDAStorageServiceClient>();
+
+        Dictionary<string, DIDAWorkerServerService.DIDAWorkerServerServiceClient> WorkerChannelDict =
+                new Dictionary<string, DIDAWorkerServerService.DIDAWorkerServerServiceClient>();
+
         Dictionary<string, string> Map_name_to_ip = new Dictionary<string, string>(); //mapeia o nome do node com o ip do node, para usar no crash
 
-        List<string> PCSs_urls = new List<string> { "http://localhost:10000" };
+        List<string> PCSs_urls = new List<string> { "http://194.210.234.180:10000", "http://localhost:10000"};
 
-        public PM_logic() {
-            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
-            //inicializar canais para os pcs
-
-            foreach(string url in PCSs_urls) {
+        private void connectPCSs() {
+            foreach (string url in PCSs_urls) {
                 GrpcChannel pcs_channel = GrpcChannel.ForAddress(url);
                 var pcs_Service = new DIDAPCSServerService.DIDAPCSServerServiceClient(pcs_channel);
 
@@ -58,6 +58,13 @@ namespace ClassLibraryPM {
                 PCSs_dict.Add(ip, pcs_Service);
             }
         }
+        public PM_logic() {
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
+            //inicializar canais para os pcs
+            connectPCSs();
+        }
+
 
         //le um ficheiro
         public void readFile(string file_name) {
@@ -68,11 +75,8 @@ namespace ClassLibraryPM {
         // handle de um linha do ficheiro de configs
         public void HandleNextLine(string line) {
 
-            // infos para inicio de processos
-            ProcessStartInfo startInfo;
+            
             List<string> args = new List<string>();
-
-            Process aux_To_add_list;
 
             string[] words = line.Split(' ');
             string word = words[0];
@@ -108,6 +112,7 @@ namespace ClassLibraryPM {
                         string aux = storage.name + "#" + storage.url;
                         requestList.Add(aux);
                     }
+
                     DIDAStorageInfoRequest infoRequest = new DIDAStorageInfoRequest {  };
                     infoRequest.StorageList.Add(requestList);
                     foreach(KeyValuePair<string, DIDAStorageService.DIDAStorageServiceClient> item in StorageChannelDict) {
@@ -140,6 +145,10 @@ namespace ClassLibraryPM {
 
                     Map_name_to_ip.Add(auxWorker.name, worker_IP);
 
+                    GrpcChannel worker_channel = GrpcChannel.ForAddress(auxWorker.url);
+                    var Worker_Service = new DIDAWorkerServerService.DIDAWorkerServerServiceClient(worker_channel);
+                    WorkerChannelDict.Add(auxWorker.name, Worker_Service);
+
                     ComandosLidos = ComandosLidos + "worker node = " + auxWorker.name + "--" + auxWorker.url + "--" + auxWorker.gossipDelay + "\r\n";
 
                     break;
@@ -161,7 +170,7 @@ namespace ClassLibraryPM {
                     Uri storage_uri = new Uri(auxStorage.url);
                     string storage_IP = storage_uri.Host;
 
-                    PCSs_dict[storage_IP].CreateRemoteStorageAsync(createStrorageRequest);
+                    PCSs_dict[storage_IP].CreateRemoteStorage(createStrorageRequest);
 
                     Map_name_to_ip.Add(auxStorage.name, storage_IP);
 
@@ -176,14 +185,12 @@ namespace ClassLibraryPM {
                     var pop_path = Path.Combine(Environment.CurrentDirectory, @"files\", populate_file);
                     string[] data = System.IO.File.ReadAllLines(pop_path);
 
-                    foreach (StorageStruct storageInfo in StorageList) {
-                        GrpcChannel storage_channel = GrpcChannel.ForAddress(storageInfo.url);
-                        var storageNode = new DIDAStorageService.DIDAStorageServiceClient(storage_channel);
-                        foreach (string data_line in data)
-                        {
+                    foreach (KeyValuePair<string, DIDAStorageService.DIDAStorageServiceClient> item in StorageChannelDict) {
+                        
+                        foreach (string data_line in data) {
                             string[] data_keyvalue = data_line.Split(",");
                             DIDAWriteRequest request = new DIDAWriteRequest { Id = data_keyvalue[0], Val = data_keyvalue[1] };
-                            storageNode.populateAsync(request);
+                            item.Value.populateAsync(request);
                         }
                     }
 
@@ -212,13 +219,23 @@ namespace ClassLibraryPM {
 
                     break;
                 case "status":
-
                     ComandosLidos = ComandosLidos + "Status\r\n";
+
+                    foreach (KeyValuePair<string, DIDAStorageService.DIDAStorageServiceClient> item in StorageChannelDict) {
+                        item.Value.printStatusAsync(new DIDAPrintRequest { });
+                    }
+                    //caso seja para imprimir tambem nos workers
+                    /*foreach (KeyValuePair<string, DIDAWorkerServerService.DIDAWorkerServerServiceClient> item in WorkerChannelDict) {
+                        item.Value.printStatusAsync(new DIDAPrintRequest { });
+                    }*/
+                    //Scheduler_Service.printStatusAsyn(new DIDAPrintRequest { });
 
                     break;
                 case "listServer":
 
                     string server_id = words[1];
+
+                    StorageChannelDict[server_id].listServerAsync(new DIDAListServerRequest { });
 
                     ComandosLidos = ComandosLidos + "List server " + server_id + "\r\n";
 
@@ -226,6 +243,10 @@ namespace ClassLibraryPM {
                 case "listGlobal":
 
                     ComandosLidos = ComandosLidos + "List Global\r\n";
+
+                    foreach (KeyValuePair<string, DIDAStorageService.DIDAStorageServiceClient> item in StorageChannelDict) {
+                        item.Value.listServerAsync(new DIDAListServerRequest { });
+                    }
 
                     break;
                 case "crash":
@@ -282,7 +303,6 @@ namespace ClassLibraryPM {
                 HandleNextLine(lines[i]);
             }
         }
-
         public bool readNextLine(string file_name) {
 
             bool end_of_file = false;
