@@ -9,7 +9,9 @@ namespace Scheduler
 {
     class SchedulerServerService : DIDASchedulerServerService.DIDASchedulerServerServiceBase {
 
-        int auto_increment = 0;
+        int id_increment = 0;
+        int worker_increment = 0;
+
         List<workerStruct> workersList;
         //construtor a completar
         public SchedulerServerService(List<workerStruct> workersList) {
@@ -27,41 +29,45 @@ namespace Scheduler
             var elems = operatorString.Split(" ");
             return new DIDAOperatorID { Classname = elems[1], Order = Int32.Parse(elems[2]) };
         }
-       
+
 
         private DIDAEmptyReply RcvClientRequestImpl(DIDAClientRequest request) {
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
             string input = request.Input;
             List<string> list_of_commands = new List<string>();
-            foreach(string command in request.Commands) {
+            foreach (string command in request.Commands) {
                 list_of_commands.Add(command);
             }
 
             Console.WriteLine("input = " + input);
-            foreach(string i in list_of_commands) {
+            foreach (string i in list_of_commands) {
                 Console.WriteLine("Command: " + i);
             }
 
             DIDARequest megaRequest = new DIDARequest
             {
-                Meta = new DIDAMetaRecord { Id = auto_increment++ },
+                Meta = new DIDAMetaRecord { Id = id_increment++ },
                 Input = request.Input,
                 Next = 0,
                 ChainSize = list_of_commands.Count
             };
 
             var operatorIds = request.Commands.Select(OperatorID);
-            var url = workersList[0].url; //FIXME only one worker
-            var uri = new Uri(url);
-            var host = uri.Host;
-            var port = uri.Port;
-            var output = "";
-            
-            var assignments = operatorIds.Select(op => new DIDAAssignment { Operator = op, Host = host, Port = port, Output = output});
-            megaRequest.Chain.Add(assignments);
 
-            GrpcChannel channel = GrpcChannel.ForAddress(url);
+            foreach (DIDAOperatorID opId in operatorIds)
+            {
+                var url = workersList[worker_increment++ % workersList.Count].url;
+                var uri = new Uri(url);
+                var host = uri.Host;
+                var port = uri.Port;
+                var output = "";
+                var assignment = new DIDAAssignment { Operator = opId, Host = host, Port = port, Output = output };
+                megaRequest.Chain.Add(assignment);
+            }
+            var firstHost = megaRequest.Chain[0].Host;
+            var firstPort = megaRequest.Chain[0].Port;
+            var channel = Grpc.Net.Client.GrpcChannel.ForAddress("http://" + firstHost + ":" + firstPort);
             var worker = new DIDAWorkerServerService.DIDAWorkerServerServiceClient(channel);
             worker.workAsync(megaRequest);
 

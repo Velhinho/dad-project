@@ -29,16 +29,21 @@ namespace Worker
 
         private DIDAReply WorkImpl(DIDARequest request)
         {
-            while (request.Next < request.ChainSize)
+            string class_to_load = request.Chain[request.Next].Operator.Classname;
+            Console.WriteLine("Received request to use " + class_to_load);
+            IDIDAOperator opObj = createOpInstance(class_to_load);
+            opObj.ConfigureStorage(storageProxy);
+            Console.WriteLine("Configured Storage!");
+            var meta = new DIDAWorker.DIDAMetaRecord { Id = request.Meta.Id };
+            opObj.ProcessRecord(meta, request.Input, request.Chain[request.Next].Output);
+            request.Next++;
+            if(request.Next < request.ChainSize)
             {
-                string class_to_load = request.Chain[request.Next].Operator.Classname;
-                Console.WriteLine("Received request to use " + class_to_load);
-                IDIDAOperator opObj = createOpInstance(class_to_load);
-                opObj.ConfigureStorage(storageProxy);
-                Console.WriteLine("Configured Storage!");
-                var meta = new DIDAWorker.DIDAMetaRecord { Id = request.Meta.Id };
-                opObj.ProcessRecord(meta, request.Input, request.Chain[request.Next].Output);
-                request.Next++;
+                var nextHost = request.Chain[request.Next].Host;
+                var nextPort = request.Chain[request.Next].Port;
+                var channel = Grpc.Net.Client.GrpcChannel.ForAddress("http://" + nextHost + ":" + nextPort);
+                var worker = new DIDAWorkerServerService.DIDAWorkerServerServiceClient(channel);
+                worker.workAsync(request);
             }
             Console.WriteLine("Finished processing record helll yeah");
             return new DIDAReply

@@ -19,7 +19,7 @@
 		<Protobuf Include="..\Storage\protos\DIDAStorage.proto" GrpcServices="Client">
 		  <Link>Protos\DIDAStorage.proto</Link>
 		</Protobuf>
-		<Protobuf Include="protos\DIDAWorkerServer.proto" GrpcServices="Server" />
+		<Protobuf Include="protos\DIDAWorkerServer.proto" GrpcServices="Both" />
 	</ItemGroup>
 
 	<ItemGroup>
