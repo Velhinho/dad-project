@@ -170,7 +170,7 @@ namespace ClassLibraryPM {
                     Uri storage_uri = new Uri(auxStorage.url);
                     string storage_IP = storage_uri.Host;
 
-                    PCSs_dict[storage_IP].CreateRemoteStorage(createStrorageRequest);
+                    PCSs_dict[storage_IP].CreateRemoteStorageAsync(createStrorageRequest);
 
                     Map_name_to_ip.Add(auxStorage.name, storage_IP);
 
