@@ -79,5 +79,16 @@ namespace Storage
                 return EmptyVersion;
             }
         }
+
+        public override string ToString()
+        {
+            string res = "";
+            foreach (KeyValuePair<string, VersionManager> item in records)
+            {
+                res += "Record with key: " + item.Key + "\n" + item.Value.ToString() + "\n";
+            }
+            res = res.Trim();
+            return res;
+        }
     }
 }

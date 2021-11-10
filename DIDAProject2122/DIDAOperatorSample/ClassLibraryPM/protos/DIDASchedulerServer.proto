@@ -2,7 +2,6 @@
 
 
 service DIDASchedulerServerService {
-    rpc read(TestRequest) returns (TestReply);
     rpc RcvClientRequest(DIDAClientRequest) returns (DIDAEmptyReply);
     rpc RcvPopulateData(DIDAPopData) returns (DIDAEmptyReply);
 }
@@ -18,12 +17,4 @@ message DIDAClientRequest {
 
 message DIDAEmptyReply {
 
-}
-
-message TestRequest {
-    string val = 1;        
-}
-
-message TestReply {
-    string val = 1;
 }

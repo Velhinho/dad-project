@@ -45,5 +45,16 @@ namespace Storage
             versions[highestVersion] = newRecord;
             return newRecord;
         }
+
+        public override string ToString()
+        {
+            string res = "";
+            foreach(KeyValuePair<int, DIDARecord> item in versions)
+            {
+                res += item.Value + "\n";
+            }
+            res = res.Trim();
+            return res;
+        }
     }
 }

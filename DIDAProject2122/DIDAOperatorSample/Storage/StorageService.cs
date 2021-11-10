@@ -60,7 +60,8 @@ namespace Storage
         
         public override Task<DIDAListServerReply> listServer(DIDAListServerRequest request, ServerCallContext context)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(StorageNode.RecordStorage.ToString());
+            return Task.FromResult(new DIDAListServerReply { });
         }
 
         public override Task<DIDAStorageInfoReply> sendStorageInfo(DIDAStorageInfoRequest request, ServerCallContext context)
