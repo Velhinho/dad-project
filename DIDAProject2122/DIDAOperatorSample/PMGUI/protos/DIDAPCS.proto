@@ -1,0 +1,41 @@
+﻿syntax = "proto3";
+
+
+service DIDAPCSServerService {
+    rpc CreateRemoteScheduler(DIDAcreateScheduler) returns (DIDAEmpty);
+    rpc CreateRemoteWorker(DIDAcreateWorker) returns (DIDAEmpty);
+    rpc CreateRemoteStorage(DIDAcreateStorage) returns (DIDAEmpty);
+
+    rpc KillServer(DIDAServer) returns (DIDAEmpty);
+}
+
+message DIDAServer {
+    string name = 1; 
+}
+
+message DIDAcreateScheduler {
+    string name = 1; 
+    string url = 2; 
+    repeated string workers = 3; 
+    string debug = 4;
+}
+
+message DIDAcreateWorker {
+    string name = 1; 
+    string url = 2; 
+    string gossip = 3; 
+    repeated string storage = 4;
+    string debug = 5;
+}
+
+message DIDAcreateStorage {
+    string name = 1; 
+    string url = 2; 
+    string gossip = 3; 
+    string debug = 4;
+    int32 replicaIdAutoIncrement = 5;
+}
+
+message DIDAEmpty {
+
+}

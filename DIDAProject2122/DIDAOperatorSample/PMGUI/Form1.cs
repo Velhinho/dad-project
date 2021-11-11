@@ -7,15 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ClassLibraryPM;
 
 namespace PMGUI {
     public partial class FormPM : Form {
 
-        private PM_logic PM = new PM_logic();
+        private PM_logic PM;
 
         public FormPM() {
             InitializeComponent();
+            PM = new PM_logic(this);
         }
 
         private void buttonReadConfigFile_Click(object sender, EventArgs e) {
@@ -45,6 +45,18 @@ namespace PMGUI {
 
             textBoxReadCommand.Text = "";
             textBoxListConfigs.Text = PM.listarComandos();
+        }
+
+        public void AddDebug(string m) { 
+            textBoxDebug.Text += m + "\r\n"; 
+        }
+
+        private void FormPM_Load(object sender, EventArgs e) {
+
+        }
+
+        private void FormPM_Closing(object sender, FormClosingEventArgs e) {
+            PM.ServerShutdown();
         }
 
     }

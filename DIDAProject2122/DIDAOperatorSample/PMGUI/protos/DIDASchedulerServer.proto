@@ -1,0 +1,29 @@
+﻿syntax = "proto3";
+
+
+service DIDASchedulerServerService {
+    rpc read(TestRequest) returns (TestReply);
+    rpc RcvClientRequest(DIDAClientRequest) returns (DIDAEmptyReply);
+    rpc RcvPopulateData(DIDAPopData) returns (DIDAEmptyReply);
+}
+
+message DIDAPopData {
+    repeated string data = 1;
+}
+
+message DIDAClientRequest {
+    string input = 1; 
+    repeated string commands = 2;        
+}
+
+message DIDAEmptyReply {
+
+}
+
+message TestRequest {
+    string val = 1;        
+}
+
+message TestReply {
+    string val = 1;
+}

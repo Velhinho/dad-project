@@ -6,6 +6,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="protos\PMLogic.proto" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Google.Protobuf" Version="3.18.1" />
 		<PackageReference Include="Grpc.Core" Version="2.41.0" />
 		<PackageReference Include="Grpc.Net.Client" Version="2.40.0" />
@@ -18,6 +22,7 @@
 	<ItemGroup>
 		<Protobuf Include="protos\DIDASchedulerServer.proto" GrpcServices="Server" />
 		<Protobuf Include="protos\DIDAWorkerServer.proto" GrpcServices="Client" />
+		<Protobuf Include="protos\PMLogic.proto" GrpcServices="Client" />
 	</ItemGroup>
 
 </Project>

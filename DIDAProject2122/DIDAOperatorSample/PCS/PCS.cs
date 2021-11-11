@@ -22,7 +22,8 @@ namespace PCS {
                 string schedulerURL = request.Url;
                 ProcessStartInfo startInfo = new ProcessStartInfo("Scheduler.exe"); //set do .exe do processo
                 List<string> args = new List<string>();
-                
+
+                args.Add(request.Debug);
                 args.Add(schedulerURL); // definir os argumentos
 
                 var workers = request.Workers;

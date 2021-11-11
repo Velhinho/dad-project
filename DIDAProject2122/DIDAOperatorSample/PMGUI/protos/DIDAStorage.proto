@@ -1,0 +1,87 @@
+﻿syntax = "proto3";
+
+service DIDAStorageService {
+  rpc read(DIDAReadRequest) returns (DIDAReadReply);
+  rpc write(DIDAWriteRequest) returns (DIDAVersion);
+  rpc updateIfValueIs(DIDAUpdateIfRequest) returns (DIDAVersion);
+  rpc printStatus(DIDAPrintRequest) returns (DIDAPrintReply);
+  rpc listServer(DIDAListServerRequest) returns (DIDAListServerReply);
+  rpc sendStorageInfo(DIDAStorageInfoRequest) returns (DIDAStorageInfoReply);
+  rpc pushGossip(DIDAPushGossipRequest) returns (DIDAPushGossipReply);
+  rpc populate(DIDAWriteRequest) returns (DIDAVersion);
+}
+
+message DIDAReadRequest {
+	string id = 1;  // the id of the object being read
+	DIDAVersion version = 2;
+}
+
+message DIDAReadReply {
+	DIDARecord record = 1;
+}
+
+message DIDARecord {
+	string id = 1;
+	DIDAVersion version = 2;
+	string val = 3;
+}
+
+message DIDAVersion {
+	int32 versionNumber = 1;
+	int32 replicaId = 2;
+}
+
+message DIDAWriteRequest {
+	string id = 1;
+	string val = 2;
+}
+
+message DIDAUpdateIfRequest {
+	string id = 1;
+	string oldvalue = 2;
+	string newvalue = 3;
+}
+
+message DIDAPrintRequest {
+
+}
+
+message DIDAPrintReply {
+
+}
+
+message DIDAListServerRequest {
+
+}
+
+message DIDAListServerReply {
+
+}
+
+message DIDAStorageInfoRequest {
+	repeated string storageList = 1;
+}
+
+message DIDAStorageInfoReply {
+
+}
+
+enum LogEntryType {
+	Write = 0;
+	UpdateIfValue = 1;
+}
+
+message LogEntry {
+	string id = 1;
+	string newValue = 2;
+	string oldValue = 3;
+	LogEntryType type = 4;
+}
+
+message DIDAPushGossipRequest {
+	repeated LogEntry log = 1;
+}
+
+message DIDAPushGossipReply {
+
+}

@@ -5,21 +5,36 @@ using Grpc.Net.Client;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace Scheduler
-{
+namespace Scheduler {
+
+   
     class SchedulerServerService : DIDASchedulerServerService.DIDASchedulerServerServiceBase {
 
         int id_increment = 0;
         int worker_increment = 0;
+        bool debug;
+        GrpcChannel channel;
+        DIDAPMLogicServerService.DIDAPMLogicServerServiceClient PuppetMaster;
 
         List<workerStruct> workersList;
         //construtor a completar
-        public SchedulerServerService(List<workerStruct> workersList) {
+        public SchedulerServerService(List<workerStruct> workersList, bool debug) {
             this.workersList = workersList;
+            this.debug = debug;
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+            channel = GrpcChannel.ForAddress("http://localhost:10001");
+
+            PuppetMaster = new DIDAPMLogicServerService.DIDAPMLogicServerServiceClient(channel);
         }
 
         public override Task<DIDAEmptyReply> RcvClientRequest(DIDAClientRequest request, ServerCallContext context) {
             //return base.RcvClientRequest(request, context);
+
+            if (debug) {
+                DIDADebugMsg debugMsg = new DIDADebugMsg();
+                debugMsg.DebugMsg = "SCHEDULER: Received Client Request";
+                PuppetMaster.RcvDebugMsg(debugMsg);
+            }
 
             return Task.FromResult<DIDAEmptyReply>(RcvClientRequestImpl(request));
         }
@@ -104,13 +119,19 @@ namespace Scheduler
         static void Main(string[] args)
         {
             List<workerStruct> WorkersList = new List<workerStruct>();
+            bool debug = false;
             foreach (var item in args) {
                 Console.WriteLine(item.ToString());
             }
-            Uri uri = new Uri(args[0]);
+
+            if (args[0].Equals("debug")) {
+                debug = true;
+            }
+
+            Uri uri = new Uri(args[1]);
             int port = uri.Port;
             string host = uri.Host;
-            for(var i = 1; i < args.Length; i++)
+            for(var i = 2; i < args.Length; i++)
             {
                 string[] workerInfo = args[i].Split("#");
                 workerStruct auxWorker = new workerStruct();
@@ -118,9 +139,8 @@ namespace Scheduler
                 auxWorker.url = workerInfo[1];
                 WorkersList.Add(auxWorker);
             }
-            Server server = new Server
-            {
-                Services = { DIDASchedulerServerService.BindService(new SchedulerServerService(WorkersList)) },
+            Server server = new Server {
+                Services = { DIDASchedulerServerService.BindService(new SchedulerServerService(WorkersList, debug)) },
                 Ports = { new ServerPort(host, port, ServerCredentials.Insecure) }
             };
             server.Start();
@@ -128,6 +148,7 @@ namespace Scheduler
           
             Console.ReadKey();
             server.ShutdownAsync().Wait();
+            Console.WriteLine("Server shutdown");
         }
     }
         struct workerStruct

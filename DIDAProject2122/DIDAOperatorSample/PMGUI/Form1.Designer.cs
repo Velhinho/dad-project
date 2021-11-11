@@ -117,6 +117,8 @@ namespace PMGUI {
             this.Controls.Add(this.buttonReadConfigFile);
             this.Name = "FormPM";
             this.Text = "Puppet Master";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormPM_Closing);
+            this.Load += new System.EventHandler(this.FormPM_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

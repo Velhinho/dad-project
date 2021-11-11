@@ -1,0 +1,14 @@
+﻿syntax = "proto3";
+
+
+service DIDAPMLogicServerService {
+    rpc RcvDebugMsg(DIDADebugMsg) returns (DIDAEmptyDebugReply);
+}
+
+message DIDADebugMsg {
+    string debugMsg = 1;
+}
+
+message DIDAEmptyDebugReply {
+
+}
